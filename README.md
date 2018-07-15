@@ -6,5 +6,4 @@ To run all tests sucessfully you must have installed in your machine:
 - PHP CLI
 - Python 2
 - Python 3
-
-
+- Bash
