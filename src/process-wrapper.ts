@@ -19,7 +19,7 @@ export class ProcessWrapper {
     }
 
     writeInput(value: string) {
-        this.childProcess.stdin.write(value)
+        this.childProcess.stdin.write(value.trim())
         this.childProcess.stdin.end()
     }
 
