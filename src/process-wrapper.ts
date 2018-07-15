@@ -54,22 +54,21 @@ export class ProcessWrapper {
             console.log('options')
             return spawn(this.command, [''], this.parseOptions(options))
         } 
-        return spawn(this.command)
+        return spawn(this.command, [''], {
+            detached: false,
+            shell: true
+        })
     }
 
     private parseOptions(options: ProcessOptions): SpawnOptions { 
-        this.configureTimeout(options.executionLimit)
-        let useShell = options.useShell ? options.useShell : true
+        this.configureTimeout(options.executionTimeout)
+        let useShell = options.runInShell ? options.runInShell : true
         return {
-            argv0: options.argv0,
-            cwd: options.directory,
-            detached: options.detached,
-            env: options.env,
-            gid: options.gid,
+            cwd: options.currentDirectory,
+            detached: false,
+            env: options.environment,
             shell: useShell,
-            stdio: options.stdio,
-            uid: options.uid,
-            windowsHide: options.windowsHide,
+            windowsHide: options.hideConsoleOnWindows,
             windowsVerbatimArguments: options.windowsVerbatimArguments
         }
     }
@@ -77,9 +76,14 @@ export class ProcessWrapper {
     private configureTimeout(timeoutValue?: number) {
         if (timeoutValue && timeoutValue > 0) {
             this.timeout = setTimeout(() => {
-                kill(this.childProcess.pid, 'SIGKILL')
+                this.killProcess()
             }, timeoutValue)
         }
+    }
+
+    private killProcess() {
+        kill(this.childProcess.pid, 'SIGKILL')
+        
     }
 
     private cleanupOnExit() {

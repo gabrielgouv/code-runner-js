@@ -1,13 +1,8 @@
 export interface ProcessOptions {
-    argv0?: string
-    directory?: string
-    env?: any
-    stdio?: any
-    detached?: boolean
-    uid?: number
-    gid?: number
-    useShell?: boolean | string
+    currentDirectory?: string
+    environment?: any
+    runInShell?: boolean | string
     windowsVerbatimArguments?: boolean
-    windowsHide?: boolean
-    executionLimit?: number
+    hideConsoleOnWindows?: boolean
+    executionTimeout?: number
 }

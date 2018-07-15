@@ -8,8 +8,7 @@ const filePath = './__tests__/files/java'
 beforeAll((done) => {
     let command = "javac Test.java"
     let compiler = new ProcessWrapper(command, {
-        directory: filePath,
-        useShell: true
+        currentDirectory: filePath
     })
     compiler.onClose((value: number) => {
         expect(value).toBe(0)
@@ -21,8 +20,7 @@ test('run java file', () => {
     let command = "java Test"
     let input = 'Hello Java'
     let program = new ProcessWrapper(command, {
-        directory: filePath,
-        useShell: true
+        currentDirectory: filePath
     })
     program.writeInput(input)
     program.onOutput((data: string) => {
@@ -30,6 +28,16 @@ test('run java file', () => {
     })
     program.onClose((value: number) => {
         expect(value).toBe(0)
+    })
+})
+
+test('compile java file with errors', () => {
+    let command = "javac Test_error.java"
+    let program = new ProcessWrapper(command, {
+        currentDirectory: filePath
+    })
+    program.onClose((value: number) => {
+        expect(value).toBe(1)
     })
 })
 

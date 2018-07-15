@@ -5,9 +5,7 @@ import { ProcessWrapper } from '../src/process-wrapper';
 test('create process', () => {
     let textToPrint = 'process created'
     let command = `printf "${textToPrint}"`
-    let process = new ProcessWrapper(command, {
-        useShell: true
-    })
+    let process = new ProcessWrapper(command)
     process.onOutput((output: string) => {
         expect(output).toBe(textToPrint)
     })

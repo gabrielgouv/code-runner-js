@@ -8,7 +8,7 @@ test('run python3 file', () => {
     let command = "python3 Test.py"
     let input = 'Hello Python 3'
     let program = new ProcessWrapper(command, {
-        directory: filePath
+        currentDirectory: filePath
     })
     program.writeInput(input)
     program.onOutput((data: string) => {

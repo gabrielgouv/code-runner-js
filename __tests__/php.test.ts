@@ -8,7 +8,7 @@ test('run php file', () => {
     let command = "php Test.php"
     let input = 'Hello PHP'
     let program = new ProcessWrapper(command, {
-        directory: filePath
+        currentDirectory: filePath
     })
     program.writeInput(input)
     program.onOutput((data: string) => {
