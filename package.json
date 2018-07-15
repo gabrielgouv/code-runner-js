@@ -1,0 +1,41 @@
+{
+  "name": "nodejscompilermediator",
+  "version": "1.0.0",
+  "description": "A NodeJS mediator for compile and execute code from other languages ",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "compiler",
+    "mediator"
+  ],
+  "author": "Joao Gabriel Gouveia",
+  "license": "MIT",
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  },
+  "devDependencies": {
+    "@types/jest": "^23.1.6",
+    "@types/node": "^10.5.2",
+    "jest": "^23.4.1",
+    "jest-cli": "^23.4.1",
+    "ts-jest": "^23.0.0",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "tree-kill": "^1.2.0"
+  }
+}
