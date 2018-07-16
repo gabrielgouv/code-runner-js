@@ -12,8 +12,14 @@ export class JavaCompiler extends Compiler {
         return new Promise((resolve, reject) => {
             if (isFileType(fileName, FileType.JAVA)) {
 
+                let errorOutput = ''
+
                 let compiler = new ProcessWrapper(`javac ${fileName}`, {
                     currentDirectory: enviroment.directories.java
+                })
+
+                compiler.onError((error) => {
+                    errorOutput += error
                 })
 
                 compiler.onClose((returnValue) => {
@@ -38,7 +44,10 @@ export class JavaCompiler extends Compiler {
                             })
                         })
                     } else {
-                        reject(new CompilationError('Failed to compile'))
+                        resolve({
+                            returnValue: returnValue,
+                            output: errorOutput
+                        })
                     }
                 })
             }
