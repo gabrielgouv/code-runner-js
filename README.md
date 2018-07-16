@@ -23,7 +23,7 @@ javaCompiler.run('Test.java', 'Hello Java').then((output) => {
 ```typescript
 var pythonCompiler = new PythonCompiler('2', 2000) // Python version (2), execution timeout (2 seconds)
 
-pythonCompiler.run('Test_python2.py', 'Hello Python 3').then((output) => {
+pythonCompiler.run('Test_python3.py', 'Hello Python 3').then((output) => {
     console.log('Output: ' + output.output)
     console.log('Return value: ' + output.returnValue)
     console.log('Took: ' + output.took + 'ms')
