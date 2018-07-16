@@ -1,8 +1,8 @@
 import { spawn, ChildProcess, SpawnOptions } from 'child_process'
 import kill from 'tree-kill';
 
-import { ProcessOptions } from './utils/process-options'
-import { ProcessNotStartedError } from './errors/process-not-started-error';
+import { ProcessOptions } from '../utils/process-options'
+import { ProcessNotStartedError } from '../errors/process-not-started-error';
 
 export class ProcessWrapper {
 

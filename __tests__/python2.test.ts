@@ -1,6 +1,6 @@
 import 'jest'
 
-import { ProcessWrapper } from '../src/process-wrapper';
+import { ProcessWrapper } from '../src/runtime/process-wrapper';
 
 const filePath = './__tests__/files/python2'
 
