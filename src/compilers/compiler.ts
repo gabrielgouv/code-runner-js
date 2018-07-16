@@ -8,17 +8,19 @@ export interface CompilerOutput {
 
 export abstract class Compiler {
 
-    constructor(private timeout?: number) {
-        
+    private directory: string = './'
+
+    constructor(private timeout?: number, directory?: string) {
+        if (directory) this.directory = directory
     }
 
     abstract run(fileName: string, input?: string): Promise<CompilerOutput>
 
-    protected execute(command: string, directory: string, input?: string): Promise<CompilerOutput> {
+    protected execute(command: string, input?: string): Promise<CompilerOutput> {
         return new Promise((resolve) => {
             let result = ''
             let program = new ProcessWrapper(command, {
-                currentDirectory: directory,
+                currentDirectory: this.directory,
                 executionTimeout: this.timeout
             })
 

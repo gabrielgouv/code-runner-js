@@ -10,9 +10,9 @@ javaCompiler.run('Test.java', 'Hello Java').then((output) => {
     console.log('Took: ' + output.took + 'ms')
 })
 
-var pythonCompiler = new PythonCompiler('3', 2000)
+var pythonCompiler = new PythonCompiler('2', 2000)
 
-pythonCompiler.run('Test.py', 'Hello Python 3').then((output) => {
+pythonCompiler.run('Test_python2.py', 'Hello Python 3').then((output) => {
     console.log('Output: ' + output.output)
     console.log('Return value: ' + output.returnValue)
     console.log('Took: ' + output.took + 'ms')

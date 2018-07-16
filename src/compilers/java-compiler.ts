@@ -6,28 +6,23 @@ import { enviroment } from "../common/environment";
 
 export class JavaCompiler extends Compiler {
 
-    constructor(timeout?: number) {
-        super(timeout)
+    constructor(timeout?: number, directory?: string) {
+        super(timeout, directory ? directory : enviroment.directories.java)
     }
 
     run(fileName: string, input: string): Promise<CompilerOutput> {
         return new Promise((resolve) => {
             if (isFileType(fileName, FileType.JAVA)) {
-
                 let errorOutput = ''
-
-                let compiler = new ProcessWrapper(`javac ${fileName}`, {
+                let fileCompiler = new ProcessWrapper(`javac ${fileName}`, {
                     currentDirectory: enviroment.directories.java
                 })
-
-                compiler.onError((error) => {
+                fileCompiler.onError((error) => {
                     errorOutput += error
                 })
-
-                compiler.onFinish((returnValue) => {
+                fileCompiler.onFinish((returnValue) => {
                     if (returnValue === 0) {
-                        let env = enviroment.directories.java
-                        this.execute(`java ${removeFileExtension(fileName)}`, env, input).then((output) => {
+                        this.execute(`java ${removeFileExtension(fileName)}`, input).then((output) => {
                             resolve(output)
                         })
                     } else {

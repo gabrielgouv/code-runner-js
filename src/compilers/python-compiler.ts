@@ -5,18 +5,17 @@ import { enviroment } from "../common/environment";
 
 export class PythonCompiler extends Compiler {
 
-    constructor(private version: string, timeout?: number) {
-        super(timeout)
+    private version: string = ''
+
+    constructor(version?: string, timeout?: number, directory?: string) {
+        super(timeout, directory ? directory : enviroment.directories.python)
+        if (version) this.version = version
     }
 
     run(fileName: string, input: string): Promise<CompilerOutput> {
         return new Promise((resolve) => {
             if (isFileType(fileName, FileType.PYTHON)) {
-                let env = enviroment.directories.python2
-                if (this.version.startsWith('3')) {
-                    env = enviroment.directories.python3
-                }
-                this.execute(`python${this.version} ${fileName}`, env, input).then((output) => {
+                this.execute(`python${this.version} ${fileName}`, input).then((output) => {
                     resolve(output)
                 })
             }
