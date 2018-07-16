@@ -1,4 +1,5 @@
 import { ProcessWrapper } from "../runtime/process-wrapper";
+import { Observable, Observer } from "rxjs";
 
 export interface CompilerOutput {
     returnValue: number
@@ -14,10 +15,10 @@ export abstract class Compiler {
         if (directory) this.directory = directory
     }
 
-    abstract run(fileName: string, input?: string): Promise<CompilerOutput>
+    abstract run(fileName: string, input?: string): Observable<CompilerOutput>
 
-    protected execute(command: string, input?: string): Promise<CompilerOutput> {
-        return new Promise((resolve) => {
+    protected execute(command: string, input?: string): Observable<CompilerOutput> {
+        return Observable.create((observer: Observer<CompilerOutput>) => {
             let result = ''
             let program = new ProcessWrapper(command, {
                 currentDirectory: this.directory,
@@ -29,19 +30,20 @@ export abstract class Compiler {
             if (input) {
                 program.writeInput(input)
             }
-            program.onOutput((output) => {
+            program.onOutput().subscribe((output) => {
                 result += output
             })
-            program.onError((error) => {
+            program.onError().subscribe((error) => {
                 result += error
             })
-            program.onFinish((returnValue) => {
+            program.onFinish().subscribe((returnValue) => {
                 let took = new Date().getTime() - started
-                resolve({
+                observer.next({
                     returnValue: returnValue,
                     output: result,
                     took: took
                 })
+                observer.complete()
             })
         })
         

@@ -2,17 +2,17 @@ import { Compiler } from "./src/compilers/compiler";
 import { JavaCompiler } from "./src/compilers/java-compiler";
 import { PythonCompiler } from "./src/compilers/python-compiler";
 
-var javaCompiler: Compiler = new JavaCompiler(2000);
+var javaCompiler: Compiler = new JavaCompiler(2000)
 
-javaCompiler.run('Test.java', 'Hello Java').then((output) => {
+javaCompiler.run('Test.java', 'Hello Java').subscribe((output) => {
     console.log('Output: ' + output.output)
     console.log('Return value: ' + output.returnValue)
     console.log('Took: ' + output.took + 'ms')
 })
 
-var pythonCompiler = new PythonCompiler('2', 2000)
+var pythonCompiler: Compiler = new PythonCompiler('3', 2000)
 
-pythonCompiler.run('Test_python2.py', 'Hello Python 3').then((output) => {
+pythonCompiler.run('Test_python3.py', 'Hello Python 3').subscribe((output) => {
     console.log('Output: ' + output.output)
     console.log('Return value: ' + output.returnValue)
     console.log('Took: ' + output.took + 'ms')

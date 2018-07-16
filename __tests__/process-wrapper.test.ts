@@ -3,13 +3,13 @@ import 'jest'
 import { ProcessWrapper } from '../src/runtime/process-wrapper';
 
 test('create process', () => {
-    let textToPrint = 'process created'
-    let command = `printf "${textToPrint}"`
+    let input = 'process created'
+    let command = `printf "${input}"`
     let process = new ProcessWrapper(command)
-    process.onOutput((output: string) => {
-        expect(output).toBe(textToPrint)
+    process.onOutput().subscribe((data) => {
+        expect(data.toString()).toBe(input)
     })
-    process.onFinish((returnValue: number) => {
+    process.onFinish().subscribe((returnValue) => {
         expect(returnValue).toBe(0)
     })
 })

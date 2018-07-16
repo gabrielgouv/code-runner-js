@@ -11,10 +11,10 @@ test('run php file', () => {
         currentDirectory: filePath
     })
     program.writeInput(input)
-    program.onOutput((data: string) => {
-        expect(data).toBe(input)
+    program.onOutput().subscribe((data) => {
+        expect(data.toString()).toBe(input)
     })
-    program.onFinish((returnValue: number) => {
+    program.onFinish().subscribe((returnValue) => {
         expect(returnValue).toBe(0)
     })
 })

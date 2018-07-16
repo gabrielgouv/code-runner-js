@@ -11,8 +11,8 @@ beforeAll((done) => {
     let compiler = new ProcessWrapper(command, {
         currentDirectory: filePath
     })
-    compiler.onFinish((value: number) => {
-        expect(value).toBe(0)
+    compiler.onFinish().subscribe((returnValue) => {
+        expect(returnValue).toBe(0)
         done()
     })
 })
@@ -24,11 +24,11 @@ test('run java file', () => {
         currentDirectory: filePath
     })
     program.writeInput(input)
-    program.onOutput((data: string) => {
-        expect(data).toBe(input)
+    program.onOutput().subscribe((data) => {
+        expect(data.toString()).toBe(input)
     })
-    program.onFinish((value: number) => {
-        expect(value).toBe(0)
+    program.onFinish().subscribe((returnValue) => {
+        expect(returnValue).toBe(0)
     })
 })
 
@@ -37,7 +37,7 @@ test('compile java file with errors', () => {
     let program = new ProcessWrapper(command, {
         currentDirectory: filePath
     })
-    program.onFinish((returnValue: number) => {
+    program.onFinish().subscribe((returnValue) => {
         expect(returnValue).toBe(1)
     })
 })
@@ -45,7 +45,7 @@ test('compile java file with errors', () => {
 test('java compiler', () => {
     let input = 'Hello Java'
     let compiler = new JavaCompiler()
-    compiler.run('Test.java', input).then((output) => {
+    compiler.run('Test.java', input).subscribe((output) => {
         expect(output.returnValue).toBe(0)
         expect(output.output).toBe(input)
         expect(typeof output.took).toBe('number')

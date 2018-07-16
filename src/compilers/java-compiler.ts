@@ -3,6 +3,7 @@ import { Compiler, CompilerOutput } from "./compiler";
 import { FileType } from "../enums/file-type";
 import { isFileType, removeFileExtension } from "../utils/file-utils"
 import { enviroment } from "../common/environment";
+import { Observable, Observer } from 'rxjs';
 
 export class JavaCompiler extends Compiler {
 
@@ -10,23 +11,25 @@ export class JavaCompiler extends Compiler {
         super(timeout, directory ? directory : enviroment.directories.java)
     }
 
-    run(fileName: string, input: string): Promise<CompilerOutput> {
-        return new Promise((resolve) => {
+    run(fileName: string, input: string): Observable<CompilerOutput> {
+        return Observable.create((observer: Observer<CompilerOutput>) => {
             if (isFileType(fileName, FileType.JAVA)) {
                 let errorOutput = ''
                 let fileCompiler = new ProcessWrapper(`javac ${fileName}`, {
                     currentDirectory: enviroment.directories.java
                 })
-                fileCompiler.onError((error) => {
+                fileCompiler.onError().subscribe((error) => {
                     errorOutput += error
                 })
-                fileCompiler.onFinish((returnValue) => {
+
+                fileCompiler.onFinish().subscribe((returnValue) => {
                     if (returnValue === 0) {
-                        this.execute(`java ${removeFileExtension(fileName)}`, input).then((output) => {
-                            resolve(output)
+                        this.execute(`java ${removeFileExtension(fileName)}`, input).subscribe((output) => {
+                            observer.next(output)
+                            observer.complete()
                         })
                     } else {
-                        resolve({
+                        observer.error({
                             output: errorOutput,
                             returnValue: returnValue,
                             took: 0
@@ -36,4 +39,5 @@ export class JavaCompiler extends Compiler {
             }
         })  
     }
+
 }

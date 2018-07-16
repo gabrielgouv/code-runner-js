@@ -12,10 +12,10 @@ test('run python2 file', () => {
         currentDirectory: filePath
     })
     program.writeInput(input)
-    program.onOutput((data: string) => {
-        expect(data).toBe(input)
+    program.onOutput().subscribe((data) => {
+        expect(data.toString()).toBe(input)
     })
-    program.onFinish((returnValue: number) => {
+    program.onFinish().subscribe((returnValue) => {
         expect(returnValue).toBe(0)
     })
 })
@@ -27,10 +27,10 @@ test('run python3 file', () => {
         currentDirectory: filePath
     })
     program.writeInput(input)
-    program.onOutput((data: string) => {
-        expect(data).toBe(input)
+    program.onOutput().subscribe((data) => {
+        expect(data.toString()).toBe(input)
     })
-    program.onFinish((returnValue: number) => {
+    program.onFinish().subscribe((returnValue) => {
         expect(returnValue).toBe(0)
     })
 })
@@ -38,7 +38,7 @@ test('run python3 file', () => {
 test('python 2 compiler', () => {
     let input = 'Hello Python 2'
     let compiler = new PythonCompiler('2')
-    compiler.run('Test_python2.py', input).then((output) => {
+    compiler.run('Test_python2.py', input).subscribe((output) => {
         expect(output.returnValue).toBe(0)
         expect(output.output).toBe(input)
         expect(typeof output.took).toBe('number')
@@ -48,7 +48,7 @@ test('python 2 compiler', () => {
 test('python 3 compiler', () => {
     let input = 'Hello Python 3'
     let compiler = new PythonCompiler('3')
-    compiler.run('Test_python3.py', input).then((output) => {
+    compiler.run('Test_python3.py', input).subscribe((output) => {
         expect(output.returnValue).toBe(0)
         expect(output.output).toBe(input)
         expect(typeof output.took).toBe('number')

@@ -3,6 +3,7 @@ import kill from 'tree-kill';
 
 import { ProcessOptions } from '../utils/process-options'
 import { ProcessNotStartedError } from '../errors/process-not-started-error';
+import { Observable, Observer } from 'rxjs';
 
 export class ProcessWrapper {
 
@@ -23,30 +24,46 @@ export class ProcessWrapper {
         this.childProcess.stdin.end()
     }
 
-    onOutput(callback: (output: string) => void): void {
-        if (this.childProcess) {
-            this.childProcess.stdout.on('data', (output: any) => {
-                callback(output.toString('utf8'))
-            })
-        } else {
-            throw new ProcessNotStartedError()
-        }
+    onOutput(): Observable<string | Buffer> {
+        return Observable.create((observer: Observer<string | Buffer>) => {
+            if (this.childProcess) {
+                this.childProcess.stdout.on('data', (output) => {
+                    observer.next(output)
+                    observer.complete()
+                })
+            } else {
+                observer.error(new ProcessNotStartedError())
+            }
+        })
+        
     }
 
-    onError(callback: (error: string) => void): void {
-        if (this.childProcess) {
-            this.childProcess.stderr.on('data', callback)
-        } else {
-            throw new ProcessNotStartedError()
-        }
+    onError(): Observable<string | Buffer> {
+        return Observable.create((observer: Observer<string | Buffer>) => {
+            if (this.childProcess) {
+                this.childProcess.stderr.on('data', (error) => {
+                    observer.next(error)
+                    observer.complete()
+                })
+            } else {
+                observer.error(new ProcessNotStartedError())
+            }     
+        })
+        
     }
 
-    onFinish(callback: (returnValue: number) => void): void {
-        if (this.childProcess) {
-            this.childProcess.on('close', callback)
-        } else {
-            throw new ProcessNotStartedError()
-        }
+    onFinish(): Observable<number> {
+        return Observable.create((observer: Observer<number>) => {
+            if (this.childProcess) {
+                this.childProcess.on('close', (returnValue) => {
+                    observer.next(returnValue)
+                    observer.complete()
+                })
+            } else {
+                observer.error(new ProcessNotStartedError())
+            }
+        })
+        
     }
 
     private createProcess(options?: ProcessOptions): ChildProcess {

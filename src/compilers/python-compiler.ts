@@ -2,6 +2,8 @@ import { Compiler, CompilerOutput } from "./compiler";
 import { FileType } from "../enums/file-type";
 import { isFileType } from "../utils/file-utils"
 import { enviroment } from "../common/environment";
+import { Observable, Observer } from "rxjs";
+import { CompilationError } from "../errors/compilation-error";
 
 export class PythonCompiler extends Compiler {
 
@@ -12,12 +14,15 @@ export class PythonCompiler extends Compiler {
         if (version) this.version = version
     }
 
-    run(fileName: string, input: string): Promise<CompilerOutput> {
-        return new Promise((resolve) => {
+    run(fileName: string, input: string): Observable<CompilerOutput> {
+        return Observable.create((observer: Observer<CompilerOutput>) => {
             if (isFileType(fileName, FileType.PYTHON)) {
-                this.execute(`python${this.version} ${fileName}`, input).then((output) => {
-                    resolve(output)
+                this.execute(`python${this.version} ${fileName}`, input).subscribe((output) => {
+                    observer.next(output)
+                    observer.complete()
                 })
+            } else {
+                observer.error(new CompilationError('Failed to compile'))
             }
         })  
     }

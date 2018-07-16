@@ -11,10 +11,10 @@ test('run bash file', () => {
         currentDirectory: filePath
     })
     program.writeInput(input)
-    program.onOutput((data: string) => {
-        expect(data).toBe(input)
+    program.onOutput().subscribe((data) => {
+        expect(data.toString()).toBe(input)
     })
-    program.onFinish((returnValue: number) => {
+    program.onFinish().subscribe((returnValue) => {
         expect(returnValue).toBe(0)
     })
 })
@@ -25,7 +25,7 @@ test('run bash file with infinite loop', () => {
         currentDirectory: filePath,
         executionTimeout: 1000 // limit execution time
     })
-    program.onFinish((returnValue: number) => {
+    program.onFinish().subscribe((returnValue) => {
         expect(returnValue).toBe(null)
     })
 })

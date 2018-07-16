@@ -36,6 +36,7 @@
     "typescript": "^2.9.2"
   },
   "dependencies": {
+    "rxjs": "^6.2.2",
     "tree-kill": "^1.2.0"
   }
 }
