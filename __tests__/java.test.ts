@@ -1,6 +1,7 @@
 import 'jest'
 
 import { ProcessWrapper } from '../src/runtime/process-wrapper';
+import { JavaCompiler } from '../src/compilers/java-compiler';
 
 const filePath = './__tests__/files/java'
 
@@ -10,7 +11,7 @@ beforeAll((done) => {
     let compiler = new ProcessWrapper(command, {
         currentDirectory: filePath
     })
-    compiler.onClose((value: number) => {
+    compiler.onFinish((value: number) => {
         expect(value).toBe(0)
         done()
     })
@@ -26,7 +27,7 @@ test('run java file', () => {
     program.onOutput((data: string) => {
         expect(data).toBe(input)
     })
-    program.onClose((value: number) => {
+    program.onFinish((value: number) => {
         expect(value).toBe(0)
     })
 })
@@ -36,11 +37,17 @@ test('compile java file with errors', () => {
     let program = new ProcessWrapper(command, {
         currentDirectory: filePath
     })
-    program.onClose((value: number) => {
-        expect(value).toBe(1)
+    program.onFinish((returnValue: number) => {
+        expect(returnValue).toBe(1)
     })
 })
 
-afterAll(() => {
-    // TODO: remove .class file
+test('java compiler', () => {
+    let input = 'Hello Java'
+    let compiler = new JavaCompiler()
+    compiler.run('Test.java', input).then((output) => {
+        expect(output.returnValue).toBe(0)
+        expect(output.output).toBe(input)
+        expect(typeof output.took).toBe('number')
+    })
 })

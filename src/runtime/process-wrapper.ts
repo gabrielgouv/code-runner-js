@@ -41,7 +41,7 @@ export class ProcessWrapper {
         }
     }
 
-    onClose(callback: (returnValue: number) => void): void {
+    onFinish(callback: (returnValue: number) => void): void {
         if (this.childProcess) {
             this.childProcess.on('close', callback)
         } else {

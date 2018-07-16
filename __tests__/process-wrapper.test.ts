@@ -9,7 +9,7 @@ test('create process', () => {
     process.onOutput((output: string) => {
         expect(output).toBe(textToPrint)
     })
-    process.onClose((value: number) => {
-        expect(value).toBe(0)
+    process.onFinish((returnValue: number) => {
+        expect(returnValue).toBe(0)
     })
 })

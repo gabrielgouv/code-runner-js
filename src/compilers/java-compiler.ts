@@ -1,10 +1,14 @@
 import { ProcessWrapper } from "../runtime/process-wrapper";
 import { Compiler, CompilerOutput } from "./compiler";
 import { FileType } from "../enums/file-type";
-import { isFileType, getOnlyNameFromFile } from "../utils/file-utils"
+import { isFileType, removeFileExtension } from "../utils/file-utils"
 import { enviroment } from "../common/environment";
 
 export class JavaCompiler extends Compiler {
+
+    constructor(timeout?: number) {
+        super(timeout)
+    }
 
     run(fileName: string, input: string): Promise<CompilerOutput> {
         return new Promise((resolve) => {
@@ -20,16 +24,17 @@ export class JavaCompiler extends Compiler {
                     errorOutput += error
                 })
 
-                compiler.onClose((returnValue) => {
+                compiler.onFinish((returnValue) => {
                     if (returnValue === 0) {
                         let env = enviroment.directories.java
-                        this.execute(`java ${getOnlyNameFromFile(fileName)}`, env, input).then((output) => {
+                        this.execute(`java ${removeFileExtension(fileName)}`, env, input).then((output) => {
                             resolve(output)
                         })
                     } else {
                         resolve({
                             output: errorOutput,
-                            returnValue: returnValue
+                            returnValue: returnValue,
+                            took: 0
                         })
                     }
                 })

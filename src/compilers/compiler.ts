@@ -3,31 +3,42 @@ import { ProcessWrapper } from "../runtime/process-wrapper";
 export interface CompilerOutput {
     returnValue: number
     output: string
+    took: number
 }
 
 export abstract class Compiler {
+
+    constructor(private timeout?: number) {
+        
+    }
 
     abstract run(fileName: string, input?: string): Promise<CompilerOutput>
 
     protected execute(command: string, directory: string, input?: string): Promise<CompilerOutput> {
         return new Promise((resolve) => {
-            let outputMessage = ''
+            let result = ''
             let program = new ProcessWrapper(command, {
-                currentDirectory: directory
+                currentDirectory: directory,
+                executionTimeout: this.timeout
             })
+
+            let started = new Date().getTime()
+
             if (input) {
                 program.writeInput(input)
             }
             program.onOutput((output) => {
-                outputMessage += output
+                result += output
             })
             program.onError((error) => {
-                outputMessage += error
+                result += error
             })
-            program.onClose((returnValue) => {
+            program.onFinish((returnValue) => {
+                let took = new Date().getTime() - started
                 resolve({
                     returnValue: returnValue,
-                    output: outputMessage
+                    output: result,
+                    took: took
                 })
             })
         })

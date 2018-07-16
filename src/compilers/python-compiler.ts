@@ -5,8 +5,8 @@ import { enviroment } from "../common/environment";
 
 export class PythonCompiler extends Compiler {
 
-    constructor(private version: string) {
-        super()
+    constructor(private version: string, timeout?: number) {
+        super(timeout)
     }
 
     run(fileName: string, input: string): Promise<CompilerOutput> {

@@ -14,7 +14,7 @@ test('run php file', () => {
     program.onOutput((data: string) => {
         expect(data).toBe(input)
     })
-    program.onClose((value: number) => {
-        expect(value).toBe(0)
+    program.onFinish((returnValue: number) => {
+        expect(returnValue).toBe(0)
     })
 })

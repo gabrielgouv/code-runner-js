@@ -1,6 +1,7 @@
 import 'jest'
 
 import { ProcessWrapper } from '../src/runtime/process-wrapper';
+import { PythonCompiler } from '../src/compilers/python-compiler';
 
 const filePath = './__tests__/files/python3'
 
@@ -14,7 +15,17 @@ test('run python3 file', () => {
     program.onOutput((data: string) => {
         expect(data).toBe(input)
     })
-    program.onClose((value: number) => {
-        expect(value).toBe(0)
+    program.onFinish((returnValue: number) => {
+        expect(returnValue).toBe(0)
+    })
+})
+
+test('python 3 compiler', () => {
+    let input = 'Hello Python 3'
+    let compiler = new PythonCompiler('3')
+    compiler.run('Test.py', input).then((output) => {
+        expect(output.returnValue).toBe(0)
+        expect(output.output).toBe(input)
+        expect(typeof output.took).toBe('number')
     })
 })
