@@ -18,12 +18,12 @@ export class ProcessWrapper {
         return this.childProcess
     }
 
-    writeInput(value: string) {
+    writeInput(value: string): void {
         this.childProcess.stdin.write(value.trim())
         this.childProcess.stdin.end()
     }
 
-    onOutput(callback: (output: string) => void) {
+    onOutput(callback: (output: string) => void): void {
         if (this.childProcess) {
             this.childProcess.stdout.on('data', (output: any) => {
                 callback(output.toString('utf8'))
@@ -33,7 +33,7 @@ export class ProcessWrapper {
         }
     }
 
-    onError(callback: (error: string) => void) {
+    onError(callback: (error: string) => void): void {
         if (this.childProcess) {
             this.childProcess.stderr.on('data', callback)
         } else {
@@ -41,7 +41,7 @@ export class ProcessWrapper {
         }
     }
 
-    onClose(callback: (returnValue: number) => void) {
+    onClose(callback: (returnValue: number) => void): void {
         if (this.childProcess) {
             this.childProcess.on('close', callback)
         } else {
@@ -51,10 +51,9 @@ export class ProcessWrapper {
 
     private createProcess(options?: ProcessOptions): ChildProcess {
         if (options) {
-            console.log('options')
-            return spawn(this.command, [''], this.parseOptions(options))
+            return spawn(this.command, [], this.parseOptions(options))
         } 
-        return spawn(this.command, [''], {
+        return spawn(this.command, [], {
             detached: false,
             shell: true
         })
@@ -73,7 +72,7 @@ export class ProcessWrapper {
         }
     }
 
-    private configureTimeout(timeoutValue?: number) {
+    private configureTimeout(timeoutValue?: number): void {
         if (timeoutValue && timeoutValue > 0) {
             this.timeout = setTimeout(() => {
                 this.killProcess()
@@ -81,7 +80,7 @@ export class ProcessWrapper {
         }
     }
 
-    private killProcess() {
+    private killProcess(): void {
         kill(this.childProcess.pid, 'SIGKILL')
         
     }
