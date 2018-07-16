@@ -21,7 +21,7 @@ javaCompiler.run('Test.java', 'Hello Java').then((output) => {
 ```
 
 ```typescript
-var pythonCompiler = new PythonCompiler('2', 2000) // Python version (2), execution timeout (2 seconds)
+var pythonCompiler: Compiler = new PythonCompiler('2', 2000) // Python version (2), execution timeout (2 seconds)
 
 pythonCompiler.run('Test_python2.py', 'Hello Python 2').then((output) => {
     console.log('Output: ' + output.output)
