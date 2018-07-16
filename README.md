@@ -11,9 +11,9 @@ To run all tests successfully you must have installed in your machine:
 ## Example
 
 ```typescript
-var javaCompiler: Compiler = new JavaCompiler(2000) // execution timeout (2 seconds)
+var javaCompiler: Compiler = new JavaCompiler(2000)
 
-javaCompiler.run('Test.java', 'Hello Java').then((output) => {
+javaCompiler.run('Test.java', 'Hello Java').subscribe((output) => {
     console.log('Output: ' + output.output)
     console.log('Return value: ' + output.returnValue)
     console.log('Took: ' + output.took + 'ms')
@@ -21,9 +21,9 @@ javaCompiler.run('Test.java', 'Hello Java').then((output) => {
 ```
 
 ```typescript
-var pythonCompiler: Compiler = new PythonCompiler('2', 2000) // Python version (2), execution timeout (2 seconds)
+var pythonCompiler: Compiler = new PythonCompiler('3', 2000)
 
-pythonCompiler.run('Test_python2.py', 'Hello Python 2').then((output) => {
+pythonCompiler.run('Test_python3.py', 'Hello Python 3').subscribe((output) => {
     console.log('Output: ' + output.output)
     console.log('Return value: ' + output.returnValue)
     console.log('Took: ' + output.took + 'ms')
