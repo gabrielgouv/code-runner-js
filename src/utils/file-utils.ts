@@ -1,6 +1,4 @@
-import { FileType } from "../enums/file-type";
-
-export var isFileType = (fileName: string, fileType: FileType): boolean => {
+export var isFileType = (fileName: string, fileType: string): boolean => {
     return fileName.endsWith(fileType)
 }
 

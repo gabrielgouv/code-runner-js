@@ -1,30 +1,35 @@
 import { ProcessWrapper } from "../runtime/process-wrapper";
 import { Compiler, CompilerOutput } from "./compiler";
-import { FileType } from "../enums/file-type";
 import { isFileType, removeFileExtension } from "../utils/file-utils"
-import { enviroment } from "../common/environment";
+import { lang } from "../common/langs";
 import { Observable, Observer } from 'rxjs';
+import { fillString } from "../utils/string-utils";
+import { CompilationError } from "../errors/compilation-error";
 
 export class JavaCompiler extends Compiler {
 
     constructor(timeout?: number, directory?: string) {
-        super(timeout, directory ? directory : enviroment.directories.java)
+        super(timeout, directory ? directory : lang.java.directory)
     }
 
     run(fileName: string, input: string): Observable<CompilerOutput> {
         return Observable.create((observer: Observer<CompilerOutput>) => {
-            if (isFileType(fileName, FileType.JAVA)) {
+            if (isFileType(fileName, lang.java.extension)) {
+
                 let errorOutput = ''
-                let fileCompiler = new ProcessWrapper(`javac ${fileName}`, {
-                    currentDirectory: enviroment.directories.java
+                let command = fillString(lang.java.compileCommand, fileName)
+                let fileCompiler = new ProcessWrapper(command, {
+                    currentDirectory: lang.java.directory
                 })
+
                 fileCompiler.onError().subscribe((error) => {
                     errorOutput += error
                 })
 
                 fileCompiler.onFinish().subscribe((returnValue) => {
-                    if (returnValue === 0) {
-                        this.execute(`java ${removeFileExtension(fileName)}`, input).subscribe((output) => {
+                    if (returnValue === this.SUCCESS) {
+                        command = fillString(lang.java.runCommand, removeFileExtension(fileName))
+                        this.execute(command, input).subscribe((output) => {
                             observer.next(output)
                             observer.complete()
                         })
@@ -36,6 +41,8 @@ export class JavaCompiler extends Compiler {
                         })
                     }
                 })
+            } else {
+                observer.error(new CompilationError(`Failed to compile. Wrong file type: "${fileName}"`))
             }
         })  
     }

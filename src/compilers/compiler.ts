@@ -9,6 +9,8 @@ export interface CompilerOutput {
 
 export abstract class Compiler {
 
+    readonly SUCCESS: number = 0
+
     private directory: string = './'
 
     constructor(private timeout?: number, directory?: string) {
@@ -20,28 +22,28 @@ export abstract class Compiler {
     protected execute(command: string, input?: string): Observable<CompilerOutput> {
         return Observable.create((observer: Observer<CompilerOutput>) => {
             let result = ''
-            let program = new ProcessWrapper(command, {
+            let proc = new ProcessWrapper(command, {
                 currentDirectory: this.directory,
                 executionTimeout: this.timeout
             })
 
-            let started = new Date().getTime()
+            let started = process.hrtime()
 
             if (input) {
-                program.writeInput(input)
+                proc.writeInput(input)
             }
-            program.onOutput().subscribe((output) => {
+            proc.onOutput().subscribe((output) => {
                 result += output
             })
-            program.onError().subscribe((error) => {
+            proc.onError().subscribe((error) => {
                 result += error
             })
-            program.onFinish().subscribe((returnValue) => {
-                let took = new Date().getTime() - started
+            proc.onFinish().subscribe((returnValue) => {
+                let took = process.hrtime(started)
                 observer.next({
                     returnValue: returnValue,
                     output: result,
-                    took: took
+                    took: took[1]/1000000
                 })
                 observer.complete()
             })
