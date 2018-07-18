@@ -52,7 +52,7 @@ myCompiler.execute().subscribe((result) => {
 
 ### 2) Creating a compiler definition via Compiler contructor
 
-1. In a Compiler constructor you can pass compiler options (CompilerOptions interface), same as you passed in langs file:
+1. In a Compiler constructor you can pass compiler options (CompilerOptions interface), same names as you passed in langs file:
 ```typescript
 let myCompiler: Compiler = new Compiler({
     compileCommand: 'gcc MyFile.c -o MyFile',
@@ -70,7 +70,7 @@ myCompiler.execute().subscribe((result) => {
 
 ### 3) Creating a compiler mixing the last two ways
 
-If you noticed, we set a fixed file name in the 'compileCommand' and 'runCommand' option. But if we need a dynamic file name? Let's make some changes to our compiler definition in langs file.
+If you noticed, we set a fixed file name in the ```compileCommand``` and ```runCommand``` option. But if we need a dynamic file name? Let's make some changes to our compiler definition in langs file.
 
 1. We can pass dynamic variables in our commands:
 ```typescript
