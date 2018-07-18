@@ -16,7 +16,7 @@ To setup a new compiler is pretty simple. You have three ways to add a new compi
 
 ### 1) Creating a compiler definition via langs file
 
-1. Go to src/common/langs.ts file. It look like this:
+1. Go to ```src/common/langs.ts``` file. It look like this:
 ```typescript
 export const lang = {
     java: { 
