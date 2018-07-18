@@ -40,12 +40,12 @@ c: {
 }
 ```
 
-NOTE: The C and Java language, other than Python, for example, needs to be compiled before it can be run. For these cases add the option "compileCommand" and "runCommand". If the language can be executed directly, only the "runCommand" is needed.
+**NOTE:** The C and Java language, other than Python, for example, needs to be compiled before it can be run. For these cases add the option "compileCommand" and "runCommand". If the language can be executed directly, only the "runCommand" is needed.
 
 You can pass dynamic parameters to the commands:
-- {0} version
-- {1} file name
-- {2} compiled file name
+- **{0}** version
+- **{1}** file name
+- **{2}** compiled file name
 
 3. Done! Now you can test your compile:
 ```typescript
