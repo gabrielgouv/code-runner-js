@@ -50,9 +50,9 @@ You can pass dynamic parameters to the commands:
 3. Done! Now you can test your compile:
 ```typescript
 let myCompiler: Compiler = new Compiler({
-lang: lang.c,
-fileName: 'MyCFile.c',
-compiledFileName: 'MyCFile'
+    lang: lang.c,
+    fileName: 'MyCFile.c',
+    compiledFileName: 'MyCFile'
 })
 myCompiler.execute().subscribe((result) => {
     console.log(result.output)
