@@ -81,12 +81,15 @@ c: {
 }
 ```
 
-By default you have four types of variables. These variables will be replaced by the compiler options that have the same name:
+Variables are always used inside two braces (```{variableName}```). By default you have four types of variables. These variables will be replaced by the compiler options that have the same name:
 
-- **{version}** => Replaced by version compiler option
-- **{fileName}** => Replaced by fileName compiler option
-- **{compiledFileName}** => Replaced by compiledFileName option
-- **{filePath}** => Replaced by compiledFileName option
+| Variable name    	| Description 	                            |
+|------------------	|-------------------------------------------|
+| version          	| Replaced by version compiler option    	|
+| fileName         	| Replaced by fileName compiler option    	|
+| compiledFileName 	| Replaced by compiledFileName option    	|
+| filePath         	| Replaced by compiledFileName option    	|
+
 
 2. Now you can define a "template" of your commands in the langs file and in the constructor options you can define the variables values:
 ```typescript
