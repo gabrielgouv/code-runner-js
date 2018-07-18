@@ -42,10 +42,13 @@ c: {
 
 **NOTE:** The C and Java language, other than Python, for example, needs to be compiled before it can be run. For these cases add the option "compileCommand" and "runCommand". If the language can be executed directly, only the "runCommand" is needed.
 
-You can pass dynamic parameters to the commands:
-- **{0}** => Replaced by version (version)
-- **{1}** => Replaced by file name (fileName)
-- **{2}** => Replaced by compiled file name (compiledFileName)
+You can pass dynamic variables to the commands:
+- **{version}** => Replaced by version (version)
+- **{fileName}** => Replaced by file name (fileName)
+- **{compiledFileName}** => Replaced by compiled file name (compiledFileName)
+- **{filePath}** => Replaced by file path (filePath)
+
+These variables are reserved, you cannot replace them. You can also create new variables (WIP)
 
 3. Done! Now you can test your compile:
 ```typescript
