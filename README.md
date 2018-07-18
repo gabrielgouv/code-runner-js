@@ -8,24 +8,6 @@ To run all tests successfully you must have installed in your machine:
 - Python 3
 - Bash
 
-## Example
+## Examples
 
-```typescript
-var javaCompiler: Compiler = new JavaCompiler(2000)
-
-javaCompiler.run('Test.java', 'Hello Java').subscribe((output) => {
-    console.log('Output: ' + output.output)
-    console.log('Return value: ' + output.returnValue)
-    console.log('Took: ' + output.took + 'ms')
-})
-```
-
-```typescript
-var pythonCompiler: Compiler = new PythonCompiler('3', 2000)
-
-pythonCompiler.run('Test_python3.py', 'Hello Python 3').subscribe((output) => {
-    console.log('Output: ' + output.output)
-    console.log('Return value: ' + output.returnValue)
-    console.log('Took: ' + output.took + 'ms')
-})
-```
+soon
