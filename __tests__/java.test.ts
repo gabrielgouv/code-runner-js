@@ -1,7 +1,8 @@
 import 'jest'
 
 import { ProcessWrapper } from '../src/runtime/process-wrapper';
-import { JavaCompiler } from '../src/compilers/java-compiler';
+import { Compiler } from '../src/compilers/compiler';
+import { lang } from '../src/common/langs'
 
 const filePath = './__tests__/files/java'
 
@@ -17,7 +18,7 @@ beforeAll((done) => {
     })
 })
 
-test('run java file', () => {
+test('run java file', (done) => {
     let command = "java Test"
     let input = 'Hello Java'
     let program = new ProcessWrapper(command, {
@@ -29,25 +30,32 @@ test('run java file', () => {
     })
     program.onFinish().subscribe((returnValue) => {
         expect(returnValue).toBe(0)
+        done()
     })
 })
 
-test('compile java file with errors', () => {
+test('compile java file with errors', (done) => {
     let command = "javac Test_error.java"
     let program = new ProcessWrapper(command, {
         currentDirectory: filePath
     })
     program.onFinish().subscribe((returnValue) => {
         expect(returnValue).toBe(1)
+        done()
     })
 })
 
-test('java compiler', () => {
+test('java compiler', (done) => {
     let input = 'Hello Java'
-    let compiler = new JavaCompiler()
-    compiler.run('Test.java', input).subscribe((output) => {
+    let javaCompiler: Compiler = new Compiler({
+        lang: lang.java,
+        fileName: 'Test.java',
+        compiledFileName: 'Test'
+    })
+    javaCompiler.execute(input).subscribe((output) => {
         expect(output.returnValue).toBe(0)
-        expect(output.output).toBe(input)
-        expect(typeof output.took).toBe('number')
+            expect(output.output).toBe(input)
+            expect(typeof output.took).toBe('number')
+            done()
     })
 })

@@ -4,7 +4,7 @@ import { ProcessWrapper } from '../src/runtime/process-wrapper';
 
 const filePath = './__tests__/files/bash'
 
-test('run bash file', () => {
+test('run bash file', (done) => {
     let command = "sh Test.sh"
     let input = 'Hello Bash'
     let program = new ProcessWrapper(command, {
@@ -16,6 +16,7 @@ test('run bash file', () => {
     })
     program.onFinish().subscribe((returnValue) => {
         expect(returnValue).toBe(0)
+        done()
     })
 })
 

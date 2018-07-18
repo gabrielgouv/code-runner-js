@@ -1,22 +1,24 @@
+/*
+*   {0} version
+*   {1} file name
+*   {2} compiled file name
+*/
+
 export const lang = {
     java: { 
-        extension: '.java',
-        compileCommand: 'javac {0}',
-        runCommand: 'java {0}',
+        compileCommand: 'javac {1}',
+        runCommand: 'java {2}',
         directory: './__tests__/files/java'
     },
     php: { 
-        extension: '.php', 
-        runCommand: 'php {0}',
+        runCommand: 'php {1}',
         directory: './__tests__/files/php'
     },
     bash: { 
-        extension: '.sh',
-        runCommand: 'sh {0}' ,
+        runCommand: 'sh {1}' ,
         directory: './__tests__/files/bash'
     },
     python: { 
-        extension: '.py',
         runCommand: 'python{0} {1}',
         directory: './__tests__/files/python'
     }

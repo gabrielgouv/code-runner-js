@@ -2,7 +2,7 @@ import 'jest'
 
 import { ProcessWrapper } from '../src/runtime/process-wrapper';
 
-test('create process', () => {
+test('create process', (done) => {
     let input = 'process created'
     let command = `printf "${input}"`
     let process = new ProcessWrapper(command)
@@ -11,5 +11,6 @@ test('create process', () => {
     })
     process.onFinish().subscribe((returnValue) => {
         expect(returnValue).toBe(0)
+        done()
     })
 })

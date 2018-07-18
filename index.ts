@@ -1,19 +1,38 @@
 import { Compiler } from "./src/compilers/compiler";
-import { JavaCompiler } from "./src/compilers/java-compiler";
-import { PythonCompiler } from "./src/compilers/python-compiler";
+import { lang } from "./src/common/langs";
 
-var javaCompiler: Compiler = new JavaCompiler(2000)
-
-javaCompiler.run('Test.java', 'Hello Java').subscribe((output) => {
-    console.log('Output: ' + output.output)
-    console.log('Return value: ' + output.returnValue)
+let input = 'Hello Java'
+let javaCompiler: Compiler = new Compiler({
+    lang: lang.java,
+    fileName: 'Test.java',
+    compiledFileName: 'Test',
+    executionTimeout: 2000
+})
+javaCompiler.execute().subscribe((output) => {
+    console.log(output.output)
+    console.log('Return: ' + output.returnValue)
     console.log('Took: ' + output.took + 'ms')
 })
 
-var pythonCompiler: Compiler = new PythonCompiler('3', 2000)
+input = 'Hello Python 3'
+let pythonCompiler: Compiler = new Compiler({
+    lang: lang.python,
+    version: '3',
+    fileName: 'Test_python3.py'
+})
+pythonCompiler.execute(input).subscribe((output) => {
+    console.log(output.output)
+    console.log('Return: ' + output.returnValue)
+    console.log('Took: ' + output.took + 'ms')
+})
 
-pythonCompiler.run('Test_python3.py', 'Hello Python 3').subscribe((output) => {
-    console.log('Output: ' + output.output)
-    console.log('Return value: ' + output.returnValue)
+input = 'Hello PHP'
+let phpCompiler: Compiler = new Compiler({
+    lang: lang.php,
+    fileName: 'Test.php'
+})
+phpCompiler.execute(input).subscribe((output) => {
+    console.log(output.output)
+    console.log('Return: ' + output.returnValue)
     console.log('Took: ' + output.took + 'ms')
 })

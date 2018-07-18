@@ -1,11 +1,12 @@
 import 'jest'
 
 import { ProcessWrapper } from '../src/runtime/process-wrapper';
-import { PythonCompiler } from "../src/compilers/python-compiler";
+import { Compiler } from "../src/compilers/compiler";
+import { lang } from '../src/common/langs';
 
 const filePath = './__tests__/files/python'
 
-test('run python2 file', () => {
+test('run python2 file', (done) => {
     let command = "python2 Test_python2.py"
     let input = 'Hello Python 2'
     let program = new ProcessWrapper(command, {
@@ -17,10 +18,11 @@ test('run python2 file', () => {
     })
     program.onFinish().subscribe((returnValue) => {
         expect(returnValue).toBe(0)
+        done()
     })
 })
 
-test('run python3 file', () => {
+test('run python3 file', (done) => {
     let command = "python3 Test_python3.py"
     let input = 'Hello Python 3'
     let program = new ProcessWrapper(command, {
@@ -32,25 +34,38 @@ test('run python3 file', () => {
     })
     program.onFinish().subscribe((returnValue) => {
         expect(returnValue).toBe(0)
+        done()
     })
 })
 
-test('python 2 compiler', () => {
+test('python 2 compiler', (done) => {
     let input = 'Hello Python 2'
-    let compiler = new PythonCompiler('2')
-    compiler.run('Test_python2.py', input).subscribe((output) => {
+    let compiler: Compiler = new Compiler({
+        version: '2',
+        runCommand: lang.python.runCommand,
+        directory: lang.python.directory,
+        fileName: 'Test_python2.py'
+    })
+    compiler.execute(input).subscribe((output) => {
         expect(output.returnValue).toBe(0)
         expect(output.output).toBe(input)
         expect(typeof output.took).toBe('number')
+        done()
     })
 })
 
-test('python 3 compiler', () => {
+test('python 3 compiler', (done) => {
     let input = 'Hello Python 3'
-    let compiler = new PythonCompiler('3')
-    compiler.run('Test_python3.py', input).subscribe((output) => {
+    let compiler: Compiler = new Compiler({
+        version: '3',
+        runCommand: lang.python.runCommand,
+        directory: lang.python.directory,
+        fileName: 'Test_python3.py'
+    })
+    compiler.execute(input).subscribe((output) => {
         expect(output.returnValue).toBe(0)
         expect(output.output).toBe(input)
         expect(typeof output.took).toBe('number')
+        done()
     })
 })
