@@ -8,30 +8,71 @@ To run all tests successfully you must have installed in your machine:
 - Python 3
 - Bash
 
-## Creating a new compiler (WIP)
+These above requirements will be removed soon.
 
-1. Go to src/common/langs.ts file:
+## Setup a new compiler (WIP)
+
+To setup a new compiler is pretty simple. You have three ways to add a new compiler:
+
+### 1) Creating a compiler definition via langs file
+
+1. Go to src/common/langs.ts file. It look like this:
 ```typescript
-java: { 
-    compileCommand: 'javac {fileName}',
-    runCommand: 'java {compiledFileName}',
-    filePath: './__tests__/files/java'
-},
-php: { 
-    runCommand: 'php {fileName}',
-    filePath: './__tests__/files/php'
-},
-bash: { 
-    runCommand: 'sh {fileName}' ,
-    filePath: './__tests__/files/bash'
-},
-python: { 
-    runCommand: 'python{version} {fileName}',
-    filePath: './__tests__/files/python'
+export const lang = {
+    java: { 
+        compileCommand: 'javac {fileName}',
+        runCommand: 'java {compiledFileName}',
+        filePath: './__tests__/files/java'
+    },
+    python: { 
+        runCommand: 'python{version} {fileName}',
+        filePath: './__tests__/files/python'
+    }
 }
 ```
 
-2. Now, you can add a new object that sets up your new compiler:
+2. You can add a new object that sets up your new compiler. Here, we add a C compiler that uses GCC:
+```typescript
+c: { 
+    compileCommand: 'gcc MyFile.c -o MyFile',
+    runCommand: './MyFile',
+    filePath: 'path/to/c/file'
+}
+```
+
+3. Now you can use your compiler. In the constructor you need only pass a lang option that references your compiler definitions in langs file:
+```typescript
+let myCompiler: Compiler = new Compiler({
+    lang: lang.c
+})
+myCompiler.execute().subscribe((result) => {
+    console.log(result.output)
+})
+```
+
+### 2) Creating a compiler definition via Compiler contructor
+
+1. In a Compiler constructor you can pass compiler options (CompilerOptions interface), same as you passed in langs file:
+```typescript
+let myCompiler: Compiler = new Compiler({
+    compileCommand: 'gcc MyFile.c -o MyFile',
+    runCommand: './MyFile',
+    filePath: 'path/to/c/file'
+})
+```
+
+2. And than, execute it!
+```typescript
+myCompiler.execute().subscribe((result) => {
+    console.log(result.output)
+})
+```
+
+### 3) Creating a compiler mixing the last two ways
+
+If you noticed, we set a fixed file name in the 'compileCommand' and 'runCommand' option. But if we need a dynamic file name? Let's make some changes to our compiler definition in langs file.
+
+1. We can pass dynamic variables in our commands:
 ```typescript
 c: { 
     compileCommand: 'gcc {fileName} -o {compiledFileName}',
@@ -40,24 +81,31 @@ c: {
 }
 ```
 
-**NOTE:** The C and Java language, other than Python, for example, needs to be compiled before it can be run. For these cases add the option "compileCommand" and "runCommand". If the language can be executed directly, only the "runCommand" is needed.
+By default you have four types of variables. These variables will be replaced by the compiler options that have the same name:
 
-You can pass dynamic variables to the commands:
-- **{version}** => Replaced by version (version)
-- **{fileName}** => Replaced by file name (fileName)
-- **{compiledFileName}** => Replaced by compiled file name (compiledFileName)
-- **{filePath}** => Replaced by file path (filePath)
+- **{version}** => Replaced by version compiler option
+- **{fileName}** => Replaced by fileName compiler option
+- **{compiledFileName}** => Replaced by compiledFileName option
+- **{filePath}** => Replaced by compiledFileName option
 
-These variables are reserved, you cannot replace them. You can also create new variables (WIP)
-
-3. Done! Now you can test your compile:
+2. Now you can define a "template" of your commands in the langs file and in the constructor options you can define the variables values:
 ```typescript
 let myCompiler: Compiler = new Compiler({
     lang: lang.c,
     fileName: 'MyCFile.c',
     compiledFileName: 'MyCFile'
 })
+```
+
+3. Finally you can normaly execute your compiler:
+```typescript
 myCompiler.execute().subscribe((result) => {
     console.log(result.output)
 })
 ```
+Note that ```{fileName}``` and ```{compiledFileName}``` will be replaced by ```MyCFile.c``` and ```MyCFile``` respectively.
+
+**BE CAREFUL**: Compiler options overrides lang file defined options.
+
+**NOTE:** The C and Java language, other than Python, for example, needs to be compiled before it can be run. For these cases add the option ```compileCommand``` and ```runCommand```. If the language can be executed directly, only the ```runCommand``` is needed.
+
