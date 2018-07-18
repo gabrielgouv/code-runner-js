@@ -108,7 +108,7 @@ myCompiler.execute().subscribe((result) => {
 ```
 Note that ```{fileName}``` and ```{compiledFileName}``` will be replaced by ```MyCFile.c``` and ```MyCFile``` respectively.
 
-**BE CAREFUL**: Compiler options overrides lang file defined options.
+**BE CAREFUL**: Compiler options defined in the constructor overrides lang file defined options.
 
 **NOTE:** The C and Java language, other than Python, for example, needs to be compiled before it can be run. For these cases add the option ```compileCommand``` and ```runCommand```. If the language can be executed directly, only the ```runCommand``` is needed.
 
