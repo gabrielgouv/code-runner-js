@@ -1,19 +1,21 @@
 import { ProcessWrapper } from "../runtime/process-wrapper";
 import { Observable, Observer } from "rxjs";
 import { CompilerOptions } from "./compiler-options";
-import { fillString } from "../utils/string-utils";
 import { CompilationError } from "../errors/compilation-error";
 import { RequiredOptionsNotFoundError } from "../errors/required-options-not-found-error";
+import { CommandBuilder } from "./command-builder";
 
 export interface CompilerOutput {
-    returnValue?: number
+    returnCode?: number
     output?: string
     took?: number
 }
 
 export class Compiler {
  
-    readonly SUCCESS: number = 0
+    public readonly SUCCESS_CODE: number = 0
+
+    private customVariables = new Map<string, string | number | boolean>()
 
     constructor(private options: CompilerOptions) {
         if (this.options.lang) {
@@ -22,10 +24,16 @@ export class Compiler {
         this.validateRequiredOptions()
     }
 
+    public putVariable(name: string, value: string | number | boolean): void {
+        if (name.trim().length > 0) {
+            this.customVariables.set(name.trim(), value.toString())
+        } 
+    }
+
     public execute(...inputs: string[]): Observable<CompilerOutput> {
         return Observable.create((observer: Observer<CompilerOutput>) => {
             this.compile().subscribe((output) => {
-                if (output.returnValue === this.SUCCESS && this.options.runCommand) {
+                if (output.returnCode === this.SUCCESS_CODE && this.options.runCommand) {
                     this.run(this.options.runCommand, ...inputs).subscribe((output) => {
                         observer.next(output)
                         observer.complete()
@@ -33,7 +41,7 @@ export class Compiler {
                 } else {
                     if (!this.options.runCommand) {
                         observer.error(new CompilationError('Command to run not configured.'))
-                    } else if (output.returnValue != 0) {
+                    } else if (output.returnCode != 0) {
                         observer.next(output)
                         observer.complete()
                     } else {
@@ -45,11 +53,11 @@ export class Compiler {
         })
     }
 
-    protected compile(): Observable<CompilerOutput> {
+    private compile(): Observable<CompilerOutput> {
         return Observable.create((observer: Observer<CompilerOutput>) => {
             if (this.options.compileCommand) {
                 this.run(this.options.compileCommand).subscribe((output) => {
-                    if (output.returnValue === this.SUCCESS) {
+                    if (output.returnCode === this.SUCCESS_CODE) {
                         observer.next(output)
                     } else {
                         observer.next(output)
@@ -59,29 +67,21 @@ export class Compiler {
             } else {
                 // No need to compile
                 observer.next({
-                    returnValue: this.SUCCESS
+                    returnCode: this.SUCCESS_CODE
                 })
                 observer.complete()
             } 
         })
     }
 
-    protected run(command: string, ...inputs: string[]): Observable<CompilerOutput> {
+    private run(command: string, ...inputs: string[]): Observable<CompilerOutput> {
         return Observable.create((observer: Observer<CompilerOutput>) => {
             let result = ''
 
-            let fileName = this.options.fileName ? this.options.fileName : ''
-            let compiledFileName = this.options.compiledFileName ? this.options.compiledFileName : fileName
-
-            command = fillString(
-                command, 
-                this.options.version ? this.options.version : '',
-                this.options.fileName ? this.options.fileName : '', 
-                this.options.compiledFileName ? compiledFileName : fileName
-            )
+            command = this.configureCommand(command)
 
             let proc = new ProcessWrapper(command, {
-                currentDirectory: this.options.directory,
+                currentDirectory: this.options.filePath,
                 executionTimeout: this.options.executionTimeout
             })
 
@@ -96,10 +96,10 @@ export class Compiler {
             proc.onError().subscribe((error) => {
                 result += error
             })
-            proc.onFinish().subscribe((returnValue) => {
+            proc.onFinish().subscribe((returnCode) => {
                 let took = process.hrtime(started)
                 observer.next({
-                    returnValue: returnValue,
+                    returnCode: returnCode,
                     output: result,
                     took: (took[1]/1000000) + (this.options.executionTimeout ? this.options.executionTimeout : 0)
                 })
@@ -107,6 +107,17 @@ export class Compiler {
             })
         })
         
+    }
+
+    private configureCommand(command: string): string {
+        let commandBuilder = new CommandBuilder(command)
+        commandBuilder.putVariables(this.customVariables)
+        commandBuilder.putVariable('version', this.options.version)
+        commandBuilder.putVariable('fileName', this.options.fileName)
+        commandBuilder.putVariable('compiledFileName', this.options.compiledFileName)
+        commandBuilder.putVariable('filePath', this.options.filePath)
+
+        return commandBuilder.buildCommand()
     }
 
     private validateRequiredOptions(): void {
@@ -117,10 +128,16 @@ export class Compiler {
         }
     }
 
+    private configureDefaultOptions(): void {
+        this.options.filePath = this.options.filePath ? this.options.filePath : './'
+        this.options.version = this.options.version ? this.options.version : ''
+        this.options.compiledFileName = this.options.compiledFileName ? this.options.compiledFileName : this.options.fileName
+    }
+
     private langParser(lang: any): CompilerOptions {
 
         let version: string = lang.version ? lang.version : this.options.version
-        let directory: string = lang.directory ? lang.directory : this.options.directory
+        let filePath: string = lang.filePath ? lang.filePath : this.options.filePath
         let executionTimeout: number = lang.executionTimeout ? lang.executionTimeout : this.options.executionTimeout
         let fileName: string = lang.fileName ? lang.fileName : this.options.fileName
         let compiledFileName: string = lang.compiledFileName ? lang.compiledFileName : this.options.compiledFileName
@@ -129,7 +146,7 @@ export class Compiler {
 
         return {
             version,
-            directory,
+            filePath,
             executionTimeout,
             fileName,
             compiledFileName,

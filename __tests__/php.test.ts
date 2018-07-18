@@ -14,8 +14,8 @@ test('run php file', (done) => {
     program.onOutput().subscribe((data) => {
         expect(data.toString()).toBe(input)
     })
-    program.onFinish().subscribe((returnValue) => {
-        expect(returnValue).toBe(0)
+    program.onFinish().subscribe((returnCode) => {
+        expect(returnCode).toBe(0)
         done()
     })
 })

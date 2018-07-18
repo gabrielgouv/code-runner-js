@@ -14,8 +14,8 @@ test('run bash file', (done) => {
     program.onOutput().subscribe((data) => {
         expect(data.toString()).toBe(input)
     })
-    program.onFinish().subscribe((returnValue) => {
-        expect(returnValue).toBe(0)
+    program.onFinish().subscribe((returnCode) => {
+        expect(returnCode).toBe(0)
         done()
     })
 })
@@ -26,7 +26,7 @@ test('run bash file with infinite loop', () => {
         currentDirectory: filePath,
         executionTimeout: 1000 // limit execution time
     })
-    program.onFinish().subscribe((returnValue) => {
-        expect(returnValue).toBe(null)
+    program.onFinish().subscribe((returnCode) => {
+        expect(returnCode).toBe(null)
     })
 })

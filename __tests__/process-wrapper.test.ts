@@ -9,8 +9,8 @@ test('create process', (done) => {
     process.onOutput().subscribe((data) => {
         expect(data.toString()).toBe(input)
     })
-    process.onFinish().subscribe((returnValue) => {
-        expect(returnValue).toBe(0)
+    process.onFinish().subscribe((returnCode) => {
+        expect(returnCode).toBe(0)
         done()
     })
 })

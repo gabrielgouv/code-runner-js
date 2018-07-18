@@ -59,8 +59,8 @@ export class ProcessWrapper {
     onFinish(): Observable<number> {
         return Observable.create((observer: Observer<number>) => {
             if (this.childProcess) {
-                this.childProcess.on('close', (returnValue) => {
-                    observer.next(returnValue)
+                this.childProcess.on('close', (returnCode) => {
+                    observer.next(returnCode)
                     observer.complete()
                 })
             } else {

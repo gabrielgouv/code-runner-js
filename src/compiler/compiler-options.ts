@@ -1,7 +1,7 @@
 export interface CompilerOptions {
     lang?: any
     version?: string
-    directory?: string
+    filePath?: string
     executionTimeout?: number
     fileName?: string
     compiledFileName?: string
