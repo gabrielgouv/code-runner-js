@@ -13,30 +13,30 @@ To run all tests successfully you must have installed in your machine:
 1. Go to src/common/langs.ts file:
 ```typescript
 java: { 
-    compileCommand: 'javac {1}',
-    runCommand: 'java {2}',
-    directory: './__tests__/files/java'
+    compileCommand: 'javac {fileName}',
+    runCommand: 'java {compiledFileName}',
+    filePath: './__tests__/files/java'
 },
 php: { 
-    runCommand: 'php {1}',
-    directory: './__tests__/files/php'
+    runCommand: 'php {fileName}',
+    filePath: './__tests__/files/php'
 },
 bash: { 
-    runCommand: 'sh {1}' ,
-    directory: './__tests__/files/bash'
+    runCommand: 'sh {fileName}' ,
+    filePath: './__tests__/files/bash'
 },
 python: { 
-    runCommand: 'python{0} {1}',
-    directory: './__tests__/files/python'
+    runCommand: 'python{version} {fileName}',
+    filePath: './__tests__/files/python'
 }
 ```
 
 2. Now, you can add a new object that sets up your new compiler:
 ```typescript
 c: { 
-    compileCommand: 'gcc {1} -o {2}',
-    runCommand: './{2}',
-    directory: 'path/to/c/file'
+    compileCommand: 'gcc {fileName} -o {compiledFileName}',
+    runCommand: './{compiledFileName}',
+    filePath: 'path/to/c/file'
 }
 ```
 
