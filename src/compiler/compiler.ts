@@ -22,11 +22,11 @@ export class Compiler {
         this.validateRequiredOptions()
     }
 
-    public execute(input?: string): Observable<CompilerOutput> {
+    public execute(...inputs: string[]): Observable<CompilerOutput> {
         return Observable.create((observer: Observer<CompilerOutput>) => {
             this.compile().subscribe((output) => {
                 if (output.returnValue === this.SUCCESS && this.options.runCommand) {
-                    this.run(this.options.runCommand, input).subscribe((output) => {
+                    this.run(this.options.runCommand, ...inputs).subscribe((output) => {
                         observer.next(output)
                         observer.complete()
                     })
@@ -66,7 +66,7 @@ export class Compiler {
         })
     }
 
-    protected run(command: string, input?: string): Observable<CompilerOutput> {
+    protected run(command: string, ...inputs: string[]): Observable<CompilerOutput> {
         return Observable.create((observer: Observer<CompilerOutput>) => {
             let result = ''
 
@@ -87,8 +87,8 @@ export class Compiler {
 
             let started = process.hrtime()
 
-            if (input) {
-                proc.writeInput(input)
+            if (inputs.length > 0) {
+                proc.writeInput(...inputs)
             }
             proc.onOutput().subscribe((output) => {
                 result += output

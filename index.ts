@@ -1,4 +1,4 @@
-import { Compiler } from "./src/compilers/compiler";
+import { Compiler } from "./src/compiler/compiler";
 import { lang } from "./src/common/langs";
 
 let input = 'Hello Java'
@@ -8,7 +8,7 @@ let javaCompiler: Compiler = new Compiler({
     compiledFileName: 'Test',
     executionTimeout: 2000
 })
-javaCompiler.execute().subscribe((output) => {
+javaCompiler.execute('hello', 'javinhaa', 'aaaa').subscribe((output) => {
     console.log(output.output)
     console.log('Return: ' + output.returnValue)
     console.log('Took: ' + output.took + 'ms')

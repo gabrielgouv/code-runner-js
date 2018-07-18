@@ -19,8 +19,12 @@ export class ProcessWrapper {
         return this.childProcess
     }
 
-    writeInput(value: string): void {
-        this.childProcess.stdin.write(value.trim())
+    writeInput(...inputs: string[]): void {
+        if (inputs) {
+            for (let i = 0; i < inputs.length; i++) {
+                this.childProcess.stdin.write(inputs[i])
+            }
+        }
         this.childProcess.stdin.end()
     }
 

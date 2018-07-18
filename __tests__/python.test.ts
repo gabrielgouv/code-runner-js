@@ -1,7 +1,7 @@
 import 'jest'
 
 import { ProcessWrapper } from '../src/runtime/process-wrapper';
-import { Compiler } from "../src/compilers/compiler";
+import { Compiler } from "../src/compiler/compiler";
 import { lang } from '../src/common/langs';
 
 const filePath = './__tests__/files/python'
