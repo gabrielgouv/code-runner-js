@@ -10,11 +10,11 @@ To run all tests successfully you must have installed in your machine:
 
 These above requirements will be removed soon.
 
-## Setup a new compiler (WIP)
+## Set up a new compiler (WIP)
 
 To setup a new compiler is pretty simple. You have three ways to add a new compiler:
 
-### 1) Creating a compiler definition via langs file
+### 1) Via langs file
 
 1. Go to ```src/common/langs.ts``` file. It look like this:
 ```typescript
@@ -50,7 +50,7 @@ myCompiler.execute().subscribe((result) => {
 })
 ```
 
-### 2) Creating a compiler definition via Compiler contructor
+### 2) Via Compiler contructor
 
 1. In a Compiler constructor you can pass compiler options (CompilerOptions interface), same names as you passed in langs file:
 ```typescript
@@ -68,7 +68,7 @@ myCompiler.execute().subscribe((result) => {
 })
 ```
 
-### 3) Creating a compiler mixing the last two ways
+### 3) Mixing the last two ways
 
 If you noticed, we set a fixed file name in the ```compileCommand``` and ```runCommand``` option. But if we need a dynamic file name? Let's make some changes to our compiler definition in langs file.
 
