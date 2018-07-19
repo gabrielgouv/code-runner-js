@@ -8,7 +8,7 @@ let javaCompiler: Compiler = new Compiler({
     compiledFileName: 'Test',
     executionTimeout: 2000
 })
-javaCompiler.execute('1', '2', '3').subscribe((output) => {
+javaCompiler.execute().subscribe((output) => {
     console.log(output.output)
     console.log('Return: ' + output.returnCode)
     console.log('Took: ' + output.took + 'ms')
@@ -20,7 +20,8 @@ let pythonCompiler: Compiler = new Compiler({
     version: '3',
     fileName: 'Test_python3.py'
 })
-pythonCompiler.execute(input).subscribe((output) => {
+pythonCompiler.onInputRequested(input)
+pythonCompiler.execute().subscribe((output) => {
     console.log(output.output)
     console.log('Return: ' + output.returnCode)
     console.log('Took: ' + output.took + 'ms')
@@ -31,7 +32,8 @@ let phpCompiler: Compiler = new Compiler({
     lang: lang.php,
     fileName: 'Test.php'
 })
-phpCompiler.execute(input).subscribe((output) => {
+phpCompiler.onInputRequested(input)
+phpCompiler.execute().subscribe((output) => {
     console.log(output.output)
     console.log('Return: ' + output.returnCode)
     console.log('Took: ' + output.took + 'ms')

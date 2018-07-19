@@ -15,13 +15,15 @@ export class Compiler {
  
     public readonly SUCCESS_CODE: number = 0
 
-    private customVariables = new Map<string, string | number | boolean>()
+    private customVariables: Map<string, string | number | boolean> = new Map()
+    private inputs: string[] = []
 
     constructor(private options: CompilerOptions) {
         if (this.options.lang) {
             this.options = this.langParser(this.options.lang)
         }
         this.validateRequiredOptions()
+        this.configureDefaultOptions()
     }
 
     public putVariable(name: string, value: string | number | boolean): void {
@@ -30,11 +32,15 @@ export class Compiler {
         } 
     }
 
-    public execute(...inputs: string[]): Observable<CompilerOutput> {
+    public onInputRequested(...inputs: string[]): void {
+        this.inputs = inputs
+    }
+
+    public execute(): Observable<CompilerOutput> {
         return Observable.create((observer: Observer<CompilerOutput>) => {
             this.compile().subscribe((output) => {
                 if (output.returnCode === this.SUCCESS_CODE && this.options.runCommand) {
-                    this.run(this.options.runCommand, ...inputs).subscribe((output) => {
+                    this.run(this.options.runCommand, ...this.inputs).subscribe((output) => {
                         observer.next(output)
                         observer.complete()
                     })

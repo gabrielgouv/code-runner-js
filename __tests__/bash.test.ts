@@ -24,7 +24,7 @@ test('run bash file with infinite loop', () => {
     let command = "sh Test_infinite_loop.sh"
     let program = new ProcessWrapper(command, {
         currentDirectory: filePath,
-        executionTimeout: 1000 // limit execution time
+        executionTimeout: 300 // limit execution time
     })
     program.onFinish().subscribe((returnCode) => {
         expect(returnCode).toBe(null)

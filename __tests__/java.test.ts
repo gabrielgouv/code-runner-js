@@ -52,7 +52,8 @@ test('java compiler', (done) => {
         fileName: 'Test.java',
         compiledFileName: 'Test'
     })
-    javaCompiler.execute(input).subscribe((output) => {
+    javaCompiler.onInputRequested(input)
+    javaCompiler.execute().subscribe((output) => {
         expect(output.returnCode).toBe(0)
         expect(output.output).toBe(input)
         expect(typeof output.took).toBe('number')

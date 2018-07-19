@@ -46,7 +46,8 @@ test('python 2 compiler', (done) => {
         filePath: lang.python.filePath,
         fileName: 'Test_python2.py'
     })
-    compiler.execute(input).subscribe((output) => {
+    compiler.onInputRequested(input)
+    compiler.execute().subscribe((output) => {
         expect(output.returnCode).toBe(0)
         expect(output.output).toBe(input)
         expect(typeof output.took).toBe('number')
@@ -62,7 +63,8 @@ test('python 3 compiler', (done) => {
         filePath: lang.python.filePath,
         fileName: 'Test_python3.py'
     })
-    compiler.execute(input).subscribe((output) => {
+    compiler.onInputRequested(input)
+    compiler.execute().subscribe((output) => {
         expect(output.returnCode).toBe(0)
         expect(output.output).toBe(input)
         expect(typeof output.took).toBe('number')
