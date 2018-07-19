@@ -81,7 +81,7 @@ c: {
 }
 ```
 
-Variables are always used inside two braces (```{variableName}```). By default you have four types of variables. These variables will be replaced by the compiler options that have the same name:
+Variables are always used inside two braces (```{variableName}```). By default there are four types of variables. These variables will be replaced by the compiler options that have the same name:
 
 | Variable name    	| Description 	                            |
 |------------------	|-------------------------------------------|
