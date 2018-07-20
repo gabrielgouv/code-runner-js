@@ -1,7 +1,7 @@
 import { spawn, ChildProcess, SpawnOptions } from 'child_process'
 import kill from 'tree-kill';
 
-import { ProcessOptions } from '../runtime/process-options'
+import { ProcessOptions } from './process-options'
 import { ProcessNotStartedError } from '../errors/process-not-started-error';
 import { Observable, Observer } from 'rxjs';
 
@@ -15,11 +15,11 @@ export class ProcessWrapper {
         this.cleanupOnExit()
     }
 
-    getProcess(): ChildProcess {
+    public getProcess(): ChildProcess {
         return this.childProcess
     }
 
-    writeInput(...inputs: string[]): void {
+    public writeInput(...inputs: string[]): void {
         if (inputs) {
             for (let i = 0; i < inputs.length; i++) {
                 this.childProcess.stdin.write(inputs[i])
@@ -28,7 +28,7 @@ export class ProcessWrapper {
         this.childProcess.stdin.end()
     }
 
-    onOutput(): Observable<string | Buffer> {
+    public onOutput(): Observable<string | Buffer> {
         return Observable.create((observer: Observer<string | Buffer>) => {
             if (this.childProcess) {
                 this.childProcess.stdout.on('data', (output) => {
@@ -42,7 +42,7 @@ export class ProcessWrapper {
         
     }
 
-    onError(): Observable<string | Buffer> {
+    public onError(): Observable<string | Buffer> {
         return Observable.create((observer: Observer<string | Buffer>) => {
             if (this.childProcess) {
                 this.childProcess.stderr.on('data', (error) => {
@@ -56,7 +56,7 @@ export class ProcessWrapper {
         
     }
 
-    onFinish(): Observable<number> {
+    public onFinish(): Observable<number> {
         return Observable.create((observer: Observer<number>) => {
             if (this.childProcess) {
                 this.childProcess.on('close', (returnCode) => {

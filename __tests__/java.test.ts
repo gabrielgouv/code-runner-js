@@ -56,4 +56,5 @@ test('java compiler', (done) => {
         expect(typeof output.took).toBe('number')
         done()
     })
+
 })

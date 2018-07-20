@@ -1,6 +1,6 @@
 export interface CompilerOptions {
-    filePath?: string
+    name: string
     executionTimeout?: number
-    compileCommand?: string
-    runCommand?: string
+    variables?: Map<string, string | number | boolean>
+    inputs?: string[]
 }

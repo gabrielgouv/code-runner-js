@@ -13,7 +13,8 @@ javaCompiler.execute().subscribe((output) => {
 })
 
 input = 'Hello Python 2'
-let pythonCompiler: Compiler = new Compiler('python')
+
+let pythonCompiler: Compiler = new Compiler({name: 'python'})
 pythonCompiler.putVariable('version', '2')
 pythonCompiler.putVariable('fileName', 'Test_python2.py')
 pythonCompiler.onInputRequested(input)
