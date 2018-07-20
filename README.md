@@ -10,7 +10,7 @@ To run all tests successfully you must have installed in your machine:
 
 These above requirements will be removed soon.
 
-## Set up a new compiler (WIP)
+## Set up a new compiler (pre-release v0.1.0) (outdated)
 
 To setup a new compiler is pretty simple. You have three ways to add a new compiler:
 
