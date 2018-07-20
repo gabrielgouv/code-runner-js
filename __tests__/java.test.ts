@@ -2,7 +2,6 @@ import 'jest'
 
 import { ProcessWrapper } from '../src/runtime/process-wrapper';
 import { Compiler } from '../src/compiler/compiler';
-import { lang } from '../src/common/langs'
 
 const filePath = './__tests__/files/java'
 
@@ -47,11 +46,9 @@ test('compile java file with errors', (done) => {
 
 test('java compiler', (done) => {
     let input = 'Hello Java'
-    let javaCompiler: Compiler = new Compiler({
-        lang: lang.java,
-        fileName: 'Test.java',
-        compiledFileName: 'Test'
-    })
+    let javaCompiler: Compiler = new Compiler('java')
+    javaCompiler.putVariable('fileName', 'Test.java')
+    javaCompiler.putVariable('compiledFileName', 'Test')
     javaCompiler.onInputRequested(input)
     javaCompiler.execute().subscribe((output) => {
         expect(output.returnCode).toBe(0)

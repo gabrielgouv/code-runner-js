@@ -2,7 +2,6 @@ import 'jest'
 
 import { ProcessWrapper } from '../src/runtime/process-wrapper';
 import { Compiler } from "../src/compiler/compiler";
-import { lang } from '../src/common/langs';
 
 const filePath = './__tests__/files/python'
 
@@ -40,12 +39,9 @@ test('run python3 file', (done) => {
 
 test('python 2 compiler', (done) => {
     let input = 'Hello Python 2'
-    let compiler: Compiler = new Compiler({
-        version: '2',
-        runCommand: lang.python.runCommand,
-        filePath: lang.python.filePath,
-        fileName: 'Test_python2.py'
-    })
+    let compiler: Compiler = new Compiler('python')
+    compiler.putVariable('version', '2')
+    compiler.putVariable('fileName', 'Test_python2.py')
     compiler.onInputRequested(input)
     compiler.execute().subscribe((output) => {
         expect(output.returnCode).toBe(0)
@@ -57,12 +53,9 @@ test('python 2 compiler', (done) => {
 
 test('python 3 compiler', (done) => {
     let input = 'Hello Python 3'
-    let compiler: Compiler = new Compiler({
-        version: '3',
-        runCommand: lang.python.runCommand,
-        filePath: lang.python.filePath,
-        fileName: 'Test_python3.py'
-    })
+    let compiler: Compiler = new Compiler('python')
+    compiler.putVariable('version', '3')
+    compiler.putVariable('fileName', 'Test_python3.py')
     compiler.onInputRequested(input)
     compiler.execute().subscribe((output) => {
         expect(output.returnCode).toBe(0)

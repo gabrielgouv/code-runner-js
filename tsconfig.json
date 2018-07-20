@@ -5,6 +5,7 @@
     "outDir": "dist",
     "strict": true,
     "types": ["node"],
+    "resolveJsonModule": true,
     "esModuleInterop": true
   },
   "exclude": [
