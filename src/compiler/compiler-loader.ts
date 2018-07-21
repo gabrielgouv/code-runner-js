@@ -23,10 +23,11 @@ export class CompilerLoader {
      * }
      * </code></pre>
      * Note where the name attribute is.
+     * @param path - Path where file is. By default is root folder from project.
      */
-    public getCompiler(): Observable<any> {
+    public getCompiler(path?: string): Observable<any> {
         return Observable.create((observer: Observer<any>) => {
-            const root = process.cwd()
+            const root = path ? path : process.cwd()
             from(import(`${root}/${this.fileName}`)).subscribe((compilers) => {
                 const compiler = compilers[this.name]
 
