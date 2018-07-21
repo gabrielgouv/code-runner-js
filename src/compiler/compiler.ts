@@ -96,7 +96,7 @@ export class Compiler {
                 })
             } else {
                 if (!this.configs.runCommand) {
-                    observer.error(new CompilationError('runCommand not found.'))
+                    observer.error(new CompilationError('Command to run not found.'))
                 } else if (compileOutput.returnCode !== 0) {
                     observer.next(compileOutput)
                     observer.complete()
@@ -140,7 +140,8 @@ export class Compiler {
             let result = ''
 
             if (!command) {
-                observer.error(new CompilationError('Failed to execute runCommand'))
+                observer.error(new CompilationError(
+                    'Failed to execute a command. Verify that the command to run or compile is configured.'))
             }
 
             command = this.configureCommand(command)

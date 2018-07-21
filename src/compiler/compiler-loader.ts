@@ -29,8 +29,8 @@ export class CompilerLoader {
         return Observable.create((observer: Observer<any>) => {
             const root = path ? path : process.cwd()
             from(import(`${root}/${this.fileName}`)).subscribe((compilers) => {
-                const compiler = compilers[this.name]
 
+                const compiler = compilers[this.name]
                 if (!compiler) {
                     observer.error(`Cannot find '${this.name}' in '${this.fileName}' file`)
                 }
