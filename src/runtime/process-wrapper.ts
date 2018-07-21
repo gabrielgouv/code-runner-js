@@ -15,8 +15,8 @@ export class ProcessWrapper {
     }
 
     /**
-     * Writes an array of inputs in process stdin
-     * @param inputs - Array of inputs
+     * Writes an array of inputs in process stdin.
+     * @param inputs - Array of inputs.
      */
     public writeInput(...inputs: string[]): void {
         if (inputs) {
@@ -28,7 +28,7 @@ export class ProcessWrapper {
     }
 
     /**
-     * Gets the data from process stdout
+     * Gets the data from process stdout.
      */
     public onOutput(): Observable<string | Buffer> {
         return Observable.create((observer: Observer<string | Buffer>) => {
@@ -44,7 +44,7 @@ export class ProcessWrapper {
     }
 
     /**
-     * Gets the error data from process stderr
+     * Gets the error data from process stderr.
      */
     public onError(): Observable<string | Buffer> {
         return Observable.create((observer: Observer<string | Buffer>) => {
@@ -60,7 +60,7 @@ export class ProcessWrapper {
     }
 
     /**
-     * When the process is finished
+     * When the process is finished.
      */
     public onFinish(): Observable<number> {
         return Observable.create((observer: Observer<number>) => {
@@ -76,8 +76,8 @@ export class ProcessWrapper {
     }
 
     /**
-     * Spawns a new ChildProcess
-     * @param options - Options based on ChildProcess options. This options is parsed by the {@link parseOptions}
+     * Spawns a new ChildProcess.
+     * @param options - Options based on ChildProcess options. This options is parsed by the {@link parseOptions}.
      */
     private createProcess(options?: IProcessOptions): ChildProcess {
         if (options) {
@@ -90,8 +90,8 @@ export class ProcessWrapper {
     }
 
     /**
-     * Converts the {@link IProcessOptions} to {@link SpawnOptions}
-     * @param options - The options
+     * Converts the {@link IProcessOptions} to {@link SpawnOptions}.
+     * @param options - The options.
      */
     private parseOptions(options: IProcessOptions): SpawnOptions {
         this.configureTimeout(options.executionTimeout)
@@ -107,8 +107,8 @@ export class ProcessWrapper {
     }
 
     /**
-     * Sets an execution time limit of a process. This prevents a infinite loop process
-     * @param timeoutValue - The execution timeout value
+     * Sets an execution time limit of a process. This prevents a infinite loop process.
+     * @param timeoutValue - The execution timeout value.
      */
     private configureTimeout(timeoutValue?: number): void {
         if (timeoutValue && timeoutValue > 0) {
@@ -119,14 +119,14 @@ export class ProcessWrapper {
     }
 
     /**
-     * Sends a SIGKILL signal to the running process to force. This forces its closure
+     * Sends a SIGKILL signal to the running process to force. This forces its closure.
      */
     private killProcess(): void {
         kill(this.childProcess.pid, 'SIGKILL')
     }
 
     /**
-     * Clears the timeout if the process is finished before the timeout value
+     * Clears the timeout if the process is finished before the timeout value.
      */
     private cleanupOnExit() {
         if (this.childProcess) {

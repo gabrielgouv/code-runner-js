@@ -29,17 +29,17 @@ export class Compiler {
     }
 
     /**
-     * Define the execution timeout for the process. This can prevents a infinite loop process
-     * @param value - Timeout value
+     * Defines the execution timeout for the process. This can prevents a infinite loop process.
+     * @param value - Timeout value.
      */
     public executionTimeout(value: number): void {
         this.configs.executionTimeout = value
     }
 
     /**
-     * Puts a variable in the compiler
-     * @param name - Variable name
-     * @param value - Variable value
+     * Puts a variable in the compiler.
+     * @param name - Variable name.
+     * @param value - Variable value.
      */
     public putVariable(name: string, value: string | number | boolean): void {
         this.configs.variables = this.configs.variables ? this.configs.variables : new Map()
@@ -49,7 +49,7 @@ export class Compiler {
     }
 
     /**
-     * When an input is requested at runtime, this method is called
+     * When an input is requested at runtime, this method is called.
      * @param inputs - Input lines.
      */
     public onInputRequested(...inputs: string[]): void {
@@ -75,15 +75,15 @@ export class Compiler {
     }
 
     /**
-     * Loads the 'compilers.json' file and gets the specific compiler object by name
+     * Loads the 'compilers.json' file and gets the specific compiler object by name.
      */
     private loadCompiler(): Observable<any> {
         return new CompilerLoader(this.configs.name).getCompiler()
     }
 
     /**
-     * Compiles and run the file. If compilation is successful, the file is run
-     * @param observer - Receives an observer reference from {@link execute} method
+     * Compiles and run the file. If compilation is successful, the file is run.
+     * @param observer - Receives an observer reference from {@link execute} method.
      */
     private compileAndRun(observer: Observer<ICompilerOutput>): void {
         this.compile().subscribe((compileOutput) => {
@@ -131,9 +131,9 @@ export class Compiler {
     }
 
     /**
-     * Run the process and on finish returns data (data),
-     * return code (returnCode) and time taken in execution (took)
-     * @param inputs - Array of inputs. Passed to the process when is request an input
+     * Runs the process and on finish returns data (data),
+     * return code (returnCode) and time taken in execution in milliseconds (took).
+     * @param inputs - Array of inputs. Passed to the process when an input is requested.
      */
     private run(command: string): Observable<ICompilerOutput> {
         return Observable.create((observer: Observer<ICompilerOutput>) => {
@@ -174,8 +174,8 @@ export class Compiler {
     }
 
     /**
-     * Replaces variables in command string to their values
-     * @param command - Command string
+     * Replaces variables in command string to their values.
+     * @param command - Command string.
      */
     private configureCommand(command: string): string {
         const commandBuilder = new CommandBuilder(command)
@@ -186,8 +186,8 @@ export class Compiler {
     }
 
     /**
-     * Merges options between 'compilers.json' options file and passed options in constructor
-     * @param compiler - The specific compiler object from 'compilers.json' file
+     * Merges options between 'compilers.json' options file and passed options in constructor.
+     * @param compiler - The specific compiler object from 'compilers.json' file.
      */
     private mergeOptions(compiler: any): void {
         this.configs.folder = this.configs.folder ? this.configs.folder : compiler.folder

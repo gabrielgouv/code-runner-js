@@ -10,9 +10,24 @@ export class CompilerLoader {
 
     }
 
+    /**
+     * Gets compiler object from json file in project root folder.
+     * The code below is an example of what the format of the json object can be:
+     * <pre><code>
+     * "name": {
+     *    "folder" : "path/to/compiler/folder",
+     *    "compileCommand": "compile {fileName}",
+     *    "runCommand": "exec {compiledFileName}",
+     *    "executionTimeout": 5000,
+     *    "inputs": ["Hello", "World!"]
+     * }
+     * </code></pre>
+     * Note where the name attribute is.
+     */
     public getCompiler(): Observable<any> {
         return Observable.create((observer: Observer<any>) => {
-            from(import(`${process.cwd()}/${this.fileName}`)).subscribe((compilers) => {
+            const root = process.cwd()
+            from(import(`${root}/${this.fileName}`)).subscribe((compilers) => {
                 const compiler = compilers[this.name]
 
                 if (!compiler) {
@@ -20,6 +35,7 @@ export class CompilerLoader {
                 }
 
                 this.validateAttributes(compiler, observer)
+
                 observer.next(compiler)
                 observer.complete()
             }, (error) => {
@@ -34,10 +50,21 @@ export class CompilerLoader {
         })
     }
 
+    /**
+     * Validates compiler object attributes from json file checking your types and allowed attributes.
+     * Notes:
+     * - By default name attribute cannot be passed inside json object because its is the object name;
+     * - By default variables attribute cannot be passed inside json object.
+     * @param compiler - Compiler object from json file.
+     * @param observer - Observer reference.
+     */
     private validateAttributes(compiler: any, observer: Observer<any>): void {
-        if (compiler.name && typeof compiler.name !== 'string') {
-            observer.error(new IncompatibleTypeError(
-                `The 'name' attribute must be of type string. Type: ${typeof compiler.name}`))
+        if (!this.allowedAttributes(compiler)) {
+            observer.error(new IncompatibleAttributeError(
+                `Invalid attribute in '${this.fileName}'`))
+        } else if (compiler.name && typeof compiler.name !== 'string') {
+            observer.error(new IncompatibleAttributeError(
+                `The 'name' cannot be passed as attribute in the file '${this.fileName}'`))
         } else if (compiler.folder && typeof compiler.folder !== 'string') {
             observer.error(new IncompatibleTypeError(
                 `The 'folder' attribute must be of type string. Type: ${typeof compiler.folder}`))
@@ -57,6 +84,16 @@ export class CompilerLoader {
             observer.error(new IncompatibleTypeError(
                 `The 'inputs' attribute must be of type array. Type: ${typeof compiler.inputs}`))
         }
+    }
+
+    /**
+     * Defines the allowed attributes in compiler object from json file.
+     * @param compiler - Compiler object from json file.
+     */
+    private allowedAttributes(compiler: any): boolean {
+        return compiler.name || compiler.folder || compiler.compileCommand
+            || compiler.runCommand || compiler.executionTimeout
+            || compiler.variables || compiler.inputs
     }
 
 }
