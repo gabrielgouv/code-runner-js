@@ -4,7 +4,8 @@
   "description": "A NodeJS mediator for compile and execute code from other languages ",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'"
   },
   "keywords": [
     "compiler",
