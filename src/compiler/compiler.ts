@@ -28,10 +28,19 @@ export class Compiler {
         }
     }
 
+    /**
+     * Define the execution timeout for the process. This can prevents a infinite loop process
+     * @param value - Timeout value
+     */
     public executionTimeout(value: number): void {
         this.configs.executionTimeout = value
     }
 
+    /**
+     * Puts a variable in the compiler
+     * @param name - Variable name
+     * @param value - Variable value
+     */
     public putVariable(name: string, value: string | number | boolean): void {
         this.configs.variables = this.configs.variables ? this.configs.variables : new Map()
         if (name.trim().length > 0) {
@@ -65,15 +74,21 @@ export class Compiler {
         })
     }
 
+    /**
+     * Loads the 'compilers.json' file and gets the specific compiler object by name
+     */
     private loadCompiler(): Observable<any> {
         return new CompilerLoader(this.configs.name).getCompiler()
     }
 
+    /**
+     * Compiles and run the file. If compilation is successful, the file is run
+     * @param observer - Receives an observer reference from {@link execute} method
+     */
     private compileAndRun(observer: Observer<ICompilerOutput>): void {
         this.compile().subscribe((compileOutput) => {
             if (compileOutput.returnCode === this.SUCCESS_CODE) {
-                const inputs = this.configs.inputs ? this.configs.inputs : []
-                this.run(...inputs).subscribe((runOutput) => {
+                this.run(this.configs.runCommand!).subscribe((runOutput) => {
                     observer.next(runOutput)
                     observer.complete()
                 }, (error) => {
@@ -92,6 +107,9 @@ export class Compiler {
         })
     }
 
+    /**
+     * Compiles file using the compileCommand. If compileCommand is not defined file compile is skipped.
+     */
     private compile(): Observable<ICompilerOutput> {
         return Observable.create((observer: Observer<ICompilerOutput>) => {
             if (this.configs.compileCommand) {
@@ -112,16 +130,20 @@ export class Compiler {
         })
     }
 
-    private run(...inputs: string[]): Observable<ICompilerOutput> {
+    /**
+     * Run the process and on finish returns data (data),
+     * return code (returnCode) and time taken in execution (took)
+     * @param inputs - Array of inputs. Passed to the process when is request an input
+     */
+    private run(command: string): Observable<ICompilerOutput> {
         return Observable.create((observer: Observer<ICompilerOutput>) => {
             let result = ''
-            let command = ''
 
-            if (this.configs.runCommand) {
-                command = this.configureCommand(this.configs.runCommand)
-            } else {
-                observer.error(new CompilationError('runCommand not found.'))
+            if (!command) {
+                observer.error(new CompilationError('Failed to execute runCommand'))
             }
+
+            command = this.configureCommand(command)
 
             const proc = new ProcessWrapper(command, {
                 currentDirectory: this.configs.folder,
@@ -130,8 +152,8 @@ export class Compiler {
 
             const started = process.hrtime()
 
-            if (inputs.length > 0) {
-                proc.writeInput(...inputs)
+            if (this.configs.inputs && this.configs.inputs.length > 0) {
+                proc.writeInput(...this.configs.inputs)
             }
             proc.onOutput().subscribe((output) => {
                 result += output
@@ -151,6 +173,10 @@ export class Compiler {
         })
     }
 
+    /**
+     * Replaces variables in command string to their values
+     * @param command - Command string
+     */
     private configureCommand(command: string): string {
         const commandBuilder = new CommandBuilder(command)
         this.configs.variables = this.configs.variables ? this.configs.variables : new Map()
@@ -161,7 +187,7 @@ export class Compiler {
 
     /**
      * Merges options between 'compilers.json' options file and passed options in constructor
-     * @param compiler - The specific compiler object from compilers.json file
+     * @param compiler - The specific compiler object from 'compilers.json' file
      */
     private mergeOptions(compiler: any): void {
         this.configs.folder = this.configs.folder ? this.configs.folder : compiler.folder
