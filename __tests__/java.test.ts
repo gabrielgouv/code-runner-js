@@ -51,7 +51,7 @@ test('java compiler', (done) => {
     javaCompiler.onInputRequested(input)
     javaCompiler.execute().subscribe((output) => {
         expect(output.returnCode).toBe(0)
-        expect(output.output).toBe(input)
+        expect(output.data).toBe(input)
         expect(typeof output.took).toBe('number')
         done()
     })

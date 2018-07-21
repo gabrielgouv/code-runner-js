@@ -10,7 +10,7 @@ import { isCompilerOptions } from '../utils/type-guards'
 
 export interface ICompilerOutput {
     returnCode?: number
-    output?: string
+    data?: string
     took?: number
 }
 
@@ -138,7 +138,7 @@ export class Compiler {
             proc.onFinish().subscribe((returnCode) => {
                 const took = process.hrtime(started)
                 observer.next({
-                    output: result,
+                    data: result,
                     returnCode,
                     took: took[1] / 1000000,
                 })

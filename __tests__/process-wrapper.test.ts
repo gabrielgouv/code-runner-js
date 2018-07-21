@@ -1,11 +1,10 @@
 import 'jest'
-
-import { ProcessWrapper } from '../src/runtime/process-wrapper';
+import { ProcessWrapper } from '../src/runtime/process-wrapper'
 
 test('create process', (done) => {
-    let input = 'process created'
-    let command = `printf "${input}"`
-    let process = new ProcessWrapper(command)
+    const input = 'process created'
+    const command = `printf "${input}"`
+    const process = new ProcessWrapper(command)
     process.onOutput().subscribe((data) => {
         expect(data.toString()).toBe(input)
     })

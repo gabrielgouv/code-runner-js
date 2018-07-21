@@ -1,14 +1,14 @@
 import 'jest'
 
-import { ProcessWrapper } from '../src/runtime/process-wrapper';
+import { ProcessWrapper } from '../src/runtime/process-wrapper'
 
 const filePath = './__tests__/files/php'
 
 test('run php file', (done) => {
-    let command = "php Test.php"
-    let input = 'Hello PHP'
-    let program = new ProcessWrapper(command, {
-        currentDirectory: filePath
+    const command = 'php Test.php'
+    const input = 'Hello PHP'
+    const program = new ProcessWrapper(command, {
+        currentDirectory: filePath,
     })
     program.writeInput(input)
     program.onOutput().subscribe((data) => {
