@@ -33,6 +33,10 @@ export class CommandBuilder {
         return this.command
     }
 
+    /**
+     * Replaces all occurrences of variable names with their respective values using regular expression.
+     * If the value of variable is undefined it will be replaced by an empty string.
+     */
     private configureVariables(): void {
         for (const [name, value] of this.variables.entries()) {
             this.command = this.command.replace(new RegExp(`\\{${name}\\}`, 'g'), value ? value.toString() : '')
