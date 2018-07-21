@@ -1,28 +1,26 @@
-import { CompilerConfigs } from "./compiler-configs";
-import { CompilerOptions } from "./compiler-options";
+import { ICompilerConfigs } from './compiler-configs'
+import { ICompilerOptions } from './compiler-options'
 
 export class CompilerConfigsParser {
 
-    constructor(private configs: CompilerConfigs) {
-        
+    constructor(private configs: ICompilerConfigs) {
     }
 
-    public stringParser(name: string): CompilerConfigs {
+    public fromString(name: string): ICompilerConfigs {
         return this.configs = {
             compilerName: name,
-            variables: new Map,
-            inputs: []
+            inputs: [],
+            variables: new Map(),
         }
     }
 
-    public compilerOptionsParser(compilerOptions: CompilerOptions): CompilerConfigs {
+    public fromCompilerOptions(compilerOptions: ICompilerOptions): ICompilerConfigs {
         return this.configs = {
             compilerName: compilerOptions.name,
             executionTimeout: compilerOptions.executionTimeout,
+            inputs: compilerOptions.inputs ? compilerOptions.inputs : [],
             variables: compilerOptions.variables ? compilerOptions.variables : new Map(),
-            inputs: compilerOptions.inputs ? compilerOptions.inputs : []
         }
-        
     }
 
 }

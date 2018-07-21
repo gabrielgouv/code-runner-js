@@ -1,4 +1,4 @@
-export interface CompilerConfigs {
+export interface ICompilerConfigs {
     compilerName: string,
     filePath?: string
     executionTimeout?: number

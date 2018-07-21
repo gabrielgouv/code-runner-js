@@ -1,5 +1,5 @@
-import { CompilerOptions } from "../compiler/compiler-options";
+import { ICompilerOptions } from '../compiler/compiler-options'
 
-export var isCompilerOptions = (obj: any): obj is CompilerOptions => {
+export const isCompilerOptions = (obj: any): obj is ICompilerOptions => {
     return obj.name !== undefined
 }

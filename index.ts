@@ -1,7 +1,7 @@
-import { Compiler } from "./src/compiler/compiler";
+import { Compiler } from './src/compiler/compiler'
 
 let input = 'Hello Java'
-let javaCompiler: Compiler = new Compiler('java')
+const javaCompiler: Compiler = new Compiler('java')
 javaCompiler.executionTimeout(3000)
 javaCompiler.onInputRequested(input)
 javaCompiler.putVariable('fileName', 'Test.java')
@@ -14,7 +14,7 @@ javaCompiler.execute().subscribe((output) => {
 
 input = 'Hello Python 2'
 
-let pythonCompiler: Compiler = new Compiler({name: 'python'})
+const pythonCompiler: Compiler = new Compiler({name: 'python'})
 pythonCompiler.putVariable('version', '2')
 pythonCompiler.putVariable('fileName', 'Test_python2.py')
 pythonCompiler.onInputRequested(input)
@@ -25,7 +25,7 @@ pythonCompiler.execute().subscribe((output) => {
 })
 
 input = 'Hello PHP'
-let phpCompiler: Compiler = new Compiler('php')
+const phpCompiler: Compiler = new Compiler('php')
 phpCompiler.putVariable('fileName', 'Test.php')
 phpCompiler.onInputRequested(input)
 phpCompiler.execute().subscribe((output) => {

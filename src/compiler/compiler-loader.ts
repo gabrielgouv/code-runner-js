@@ -1,5 +1,5 @@
-import { Observable, Observer, from } from "rxjs";
-import { LoaderError } from "../errors/loader-error";
+import { Observable, Observer, from } from 'rxjs'
+import { LoaderError } from '../errors/loader-error'
 
 export class CompilerLoader {
 
@@ -16,7 +16,8 @@ export class CompilerLoader {
                 observer.complete()
             }, (error) => {
                 if (error instanceof SyntaxError) {
-                    observer.error(new LoaderError(`It looks like the 'compilers.json' file is not formatted correctly. ${error}`))
+                    observer.error(
+                        new LoaderError(`It looks like the 'compilers.json' file is not formatted correctly. ${error}`))
                 } else {
                     observer.error(new LoaderError(error))
                 }

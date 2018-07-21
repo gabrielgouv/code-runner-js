@@ -1,7 +1,7 @@
-export var isFileType = (fileName: string, fileType: string): boolean => {
+export const isFileType = (fileName: string, fileType: string): boolean => {
     return fileName.endsWith(fileType)
 }
 
-export var removeFileExtension = (fileName: string): string => {
+export const removeFileExtension = (fileName: string): string => {
     return fileName.substring(0, fileName.lastIndexOf('.'))
 }

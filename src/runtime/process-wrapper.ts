@@ -1,16 +1,15 @@
+import kill from 'tree-kill'
 import { spawn, ChildProcess, SpawnOptions } from 'child_process'
-import kill from 'tree-kill';
-
-import { ProcessOptions } from './process-options'
-import { ProcessNotStartedError } from '../errors/process-not-started-error';
-import { Observable, Observer } from 'rxjs';
+import { IProcessOptions } from './process-options'
+import { ProcessNotStartedError } from '../errors/process-not-started-error'
+import { Observable, Observer } from 'rxjs'
 
 export class ProcessWrapper {
 
     private childProcess: ChildProcess
     private timeout: any
 
-    constructor(private command: string, options?: ProcessOptions) {
+    constructor(private command: string, options?: IProcessOptions) {
         this.childProcess = this.createProcess(options)
         this.cleanupOnExit()
     }
@@ -21,8 +20,8 @@ export class ProcessWrapper {
 
     public writeInput(...inputs: string[]): void {
         if (inputs) {
-            for (let i = 0; i < inputs.length; i++) {
-                this.childProcess.stdin.write(inputs[i])
+            for (const index of inputs.keys()) {
+                this.childProcess.stdin.write(inputs[index])
             }
         }
         this.childProcess.stdin.end()
@@ -39,7 +38,6 @@ export class ProcessWrapper {
                 observer.error(new ProcessNotStartedError())
             }
         })
-        
     }
 
     public onError(): Observable<string | Buffer> {
@@ -51,9 +49,8 @@ export class ProcessWrapper {
                 })
             } else {
                 observer.error(new ProcessNotStartedError())
-            }     
+            }
         })
-        
     }
 
     public onFinish(): Observable<number> {
@@ -67,29 +64,28 @@ export class ProcessWrapper {
                 observer.error(new ProcessNotStartedError())
             }
         })
-        
     }
 
-    private createProcess(options?: ProcessOptions): ChildProcess {
+    private createProcess(options?: IProcessOptions): ChildProcess {
         if (options) {
             return spawn(this.command, [], this.parseOptions(options))
-        } 
+        }
         return spawn(this.command, [], {
             detached: false,
-            shell: true
+            shell: true,
         })
     }
 
-    private parseOptions(options: ProcessOptions): SpawnOptions { 
+    private parseOptions(options: IProcessOptions): SpawnOptions {
         this.configureTimeout(options.executionTimeout)
-        let useShell = options.runInShell ? options.runInShell : true
+        const useShell = options.runInShell ? options.runInShell : true
         return {
             cwd: options.currentDirectory,
             detached: false,
             env: options.environment,
             shell: useShell,
             windowsHide: options.hideConsoleOnWindows,
-            windowsVerbatimArguments: options.windowsVerbatimArguments
+            windowsVerbatimArguments: options.windowsVerbatimArguments,
         }
     }
 
@@ -103,7 +99,6 @@ export class ProcessWrapper {
 
     private killProcess(): void {
         kill(this.childProcess.pid, 'SIGKILL')
-        
     }
 
     private cleanupOnExit() {

@@ -1,4 +1,4 @@
-export interface ProcessOptions {
+export interface IProcessOptions {
     currentDirectory?: string
     environment?: any
     runInShell?: boolean | string
