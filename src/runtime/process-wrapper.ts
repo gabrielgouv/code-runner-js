@@ -14,10 +14,10 @@ export class ProcessWrapper {
         this.cleanupOnExit()
     }
 
-    public getProcess(): ChildProcess {
-        return this.childProcess
-    }
-
+    /**
+     * Writes an array of inputs in process stdin
+     * @param inputs - Array of inputs
+     */
     public writeInput(...inputs: string[]): void {
         if (inputs) {
             for (const index of inputs.keys()) {
@@ -27,6 +27,9 @@ export class ProcessWrapper {
         this.childProcess.stdin.end()
     }
 
+    /**
+     * Gets the data from process stdout
+     */
     public onOutput(): Observable<string | Buffer> {
         return Observable.create((observer: Observer<string | Buffer>) => {
             if (this.childProcess) {
@@ -40,6 +43,9 @@ export class ProcessWrapper {
         })
     }
 
+    /**
+     * Gets the error data from process stderr
+     */
     public onError(): Observable<string | Buffer> {
         return Observable.create((observer: Observer<string | Buffer>) => {
             if (this.childProcess) {
@@ -53,6 +59,9 @@ export class ProcessWrapper {
         })
     }
 
+    /**
+     * When the process is finished
+     */
     public onFinish(): Observable<number> {
         return Observable.create((observer: Observer<number>) => {
             if (this.childProcess) {
@@ -66,6 +75,10 @@ export class ProcessWrapper {
         })
     }
 
+    /**
+     * Spawns a new ChildProcess
+     * @param options - Options based on ChildProcess options. This options is parsed by the {@link parseOptions}
+     */
     private createProcess(options?: IProcessOptions): ChildProcess {
         if (options) {
             return spawn(this.command, [], this.parseOptions(options))
@@ -76,6 +89,10 @@ export class ProcessWrapper {
         })
     }
 
+    /**
+     * Converts the {@link IProcessOptions} to {@link SpawnOptions}
+     * @param options - The options
+     */
     private parseOptions(options: IProcessOptions): SpawnOptions {
         this.configureTimeout(options.executionTimeout)
         const useShell = options.runInShell ? options.runInShell : true
@@ -89,6 +106,10 @@ export class ProcessWrapper {
         }
     }
 
+    /**
+     * Sets an execution time limit of a process. This prevents a infinite loop process
+     * @param timeoutValue - The execution timeout value
+     */
     private configureTimeout(timeoutValue?: number): void {
         if (timeoutValue && timeoutValue > 0) {
             this.timeout = setTimeout(() => {
@@ -97,10 +118,16 @@ export class ProcessWrapper {
         }
     }
 
+    /**
+     * Sends a SIGKILL signal to the running process to force. This forces its closure
+     */
     private killProcess(): void {
         kill(this.childProcess.pid, 'SIGKILL')
     }
 
+    /**
+     * Clears the timeout if the process is finished before the timeout value
+     */
     private cleanupOnExit() {
         if (this.childProcess) {
             this.childProcess.on('exit', () => {
