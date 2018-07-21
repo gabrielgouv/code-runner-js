@@ -1,7 +1,5 @@
 import { CompilationError } from '../errors/compilation-error'
 import { CommandBuilder } from './command-builder'
-import { ICompilerConfigs } from './compiler-configs'
-import { CompilerConfigsParser } from './compiler-configs-parser'
 import { ICompilerOptions } from './compiler-options'
 import { CompilerLoader } from './compiler-loader'
 import { Observable, Observer } from 'rxjs'
@@ -18,14 +16,15 @@ export class Compiler {
 
     public readonly SUCCESS_CODE: number = 0
 
-    private configs!: ICompilerConfigs
+    private configs!: ICompilerOptions
 
     constructor(obj: string | ICompilerOptions) {
-        const parser = new CompilerConfigsParser(this.configs)
         if (isCompilerOptions(obj)) {
-            this.configs = parser.fromCompilerOptions(obj)
+            this.configs = obj
         } else {
-            this.configs = parser.fromString(obj)
+            this.configs = {
+                name: obj,
+            }
         }
     }
 
@@ -34,6 +33,7 @@ export class Compiler {
     }
 
     public putVariable(name: string, value: string | number | boolean): void {
+        this.configs.variables = this.configs.variables ? this.configs.variables : new Map()
         if (name.trim().length > 0) {
             this.configs.variables.set(name.trim(), value.toString())
         }
@@ -52,10 +52,13 @@ export class Compiler {
      */
     public execute(): Observable<ICompilerOutput> {
         return Observable.create((observer: Observer<ICompilerOutput>) => {
-            this.configureDefaultOptions()
             this.loadCompiler().subscribe((compiler) => {
-                this.optionsParser(compiler)
-                this.compileAndRun(observer)
+                if (compiler !== undefined) {
+                    this.mergeOptions(compiler)
+                    this.compileAndRun(observer)
+                } else {
+                    this.compileAndRun(observer)
+                }
             }, (error) => {
                 observer.error(error)
             })
@@ -63,13 +66,14 @@ export class Compiler {
     }
 
     private loadCompiler(): Observable<any> {
-        return new CompilerLoader(this.configs.compilerName).getCompiler()
+        return new CompilerLoader(this.configs.name).getCompiler()
     }
 
     private compileAndRun(observer: Observer<ICompilerOutput>): void {
         this.compile().subscribe((compileOutput) => {
-            if (compileOutput.returnCode === this.SUCCESS_CODE && this.configs.runCommand) {
-                this.run(...this.configs.inputs).subscribe((runOutput) => {
+            if (compileOutput.returnCode === this.SUCCESS_CODE) {
+                const inputs = this.configs.inputs ? this.configs.inputs : []
+                this.run(...inputs).subscribe((runOutput) => {
                     observer.next(runOutput)
                     observer.complete()
                 }, (error) => {
@@ -120,7 +124,7 @@ export class Compiler {
             }
 
             const proc = new ProcessWrapper(command, {
-                currentDirectory: this.configs.filePath,
+                currentDirectory: this.configs.folder,
                 executionTimeout: this.configs.executionTimeout,
             })
 
@@ -149,24 +153,24 @@ export class Compiler {
 
     private configureCommand(command: string): string {
         const commandBuilder = new CommandBuilder(command)
-        if (this.configs.variables) {
-            commandBuilder.putVariables(this.configs.variables)
-        }
+        this.configs.variables = this.configs.variables ? this.configs.variables : new Map()
         commandBuilder.putVariables(this.configs.variables)
 
         return commandBuilder.buildCommand()
     }
 
-    private configureDefaultOptions(): void {
-        this.configs.filePath = this.configs.filePath ? this.configs.filePath : './'
-    }
-
-    private optionsParser(compiler: any): void {
-        this.configs.filePath = compiler.filePath
+    /**
+     * Merges options between 'compilers.json' options file and passed options in constructor
+     * @param compiler - The specific compiler object from compilers.json file
+     */
+    private mergeOptions(compiler: any): void {
+        this.configs.folder = this.configs.folder ? this.configs.folder : compiler.folder
         this.configs.executionTimeout = this.configs.executionTimeout ?
-                                        this.configs.executionTimeout : compiler.executionTimeout
-        this.configs.compileCommand = compiler.compileCommand
-        this.configs.runCommand = compiler.runCommand
+            this.configs.executionTimeout : compiler.executionTimeout
+        this.configs.compileCommand = this.configs.compileCommand ?
+            this.configs.compileCommand : compiler.compileCommand
+        this.configs.runCommand = this.configs.runCommand ? this.configs.runCommand : compiler.runCommand
+        this.configs.inputs = this.configs.inputs ? this.configs.inputs : compiler.variables
     }
 
 }

@@ -1,6 +1,6 @@
 export class CommandBuilder {
 
-    private variables = new Map<string, string | number | boolean>()
+    private variables = new Map<string, string | number | boolean | undefined>()
 
     constructor(private command: string) {
 
@@ -11,7 +11,7 @@ export class CommandBuilder {
         this.variables.set(name, value)
     }
 
-    public putVariables(variables: Map<string, string | number | boolean>): void {
+    public putVariables(variables: Map<string, string | number | boolean | undefined>): void {
         this.variables = new Map([...this.variables, ...variables])
     }
 

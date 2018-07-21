@@ -1,19 +1,19 @@
 {
     "java": {
-        "filePath" : "./__tests__/files/java",
+        "folder" : "./__tests__/files/java",
         "compileCommand": "javac {fileName}",
         "runCommand": "java {compiledFileName}"
     },
     "python": {
-        "filePath" : "./__tests__/files/python",
+        "folder" : "./__tests__/files/python",
         "runCommand": "python{version} {fileName}"
     },
     "php": {
-        "filePath" : "./__tests__/files/php",
+        "folder" : "./__tests__/files/php",
         "runCommand": "php {fileName}"
     },
     "bash": {
-        "filePath" : "./__tests__/files/bash",
+        "folder" : "./__tests__/files/bash",
         "runCommand": "sh {fileName}"
     }
 }

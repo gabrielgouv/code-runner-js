@@ -57,6 +57,7 @@ test('python 3 compiler', (done) => {
     compiler.putVariable('fileName', 'Test_python3.py')
     compiler.onInputRequested(input)
     compiler.execute().subscribe((output) => {
+        console.log(output.data)
         expect(output.returnCode).toBe(0)
         expect(output.data).toBe(input)
         expect(typeof output.took).toBe('number')
